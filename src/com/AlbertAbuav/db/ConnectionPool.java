@@ -19,7 +19,7 @@ public class ConnectionPool {
      * This is to invoke the class by the getter
      */
     private ConnectionPool() {
-        System.out.println("\"CTOR\" IN ACTION !!!");
+        // System.out.println("\"CTOR\" IN ACTION !!!");
         openAllConnections();
     }
 
