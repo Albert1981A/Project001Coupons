@@ -5,6 +5,8 @@ import java.util.List;
 
 public class Company {
 
+    private static int COUNT = 1;
+
     private int id;
     private String name;
     private String email;
@@ -12,6 +14,9 @@ public class Company {
     private List<Coupon> coupons = new ArrayList<>();
 
     public Company() {
+        this.name = "Name: " + COUNT;
+        this.email = "Email: " + COUNT;
+        this.password = "Password: " + COUNT++;
     }
 
     public Company(String name, String email, String password) {
