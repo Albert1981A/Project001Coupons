@@ -50,8 +50,14 @@ public class TestCompanies {
         System.out.println(ArtUtils.COMPANIES_DAO);
         System.out.println();
 
+        /**
+         * Interface equals to implementation.
+         */
         CompaniesDAO companiesDAO = new CompaniesDBDAO();
 
+        /**
+         * using the CompaniesDBDAO query's.
+         */
         Company c1 = new Company();
         Company c2 = new Company();
         Company c3 = new Company();
@@ -70,9 +76,9 @@ public class TestCompanies {
         companiesDAO.getAllCompanies().forEach(System.out::println);
         System.out.println();
 
-        System.out.println("------------------------- QUERY UPDATE COMPANY --------------------------");
-        Company toUpdate = companiesDAO.getSingleCompany(2);
-        toUpdate.setName("Moshe");
+        System.out.println("------------------------- QUERY UPDATE COMPANIES --------------------------");
+        Company toUpdate = companiesDAO.getSingleCompany(1);
+        toUpdate.setName("The first Company");
         companiesDAO.updateCompany(toUpdate);
         companiesDAO.getAllCompanies().forEach(System.out::println);
         System.out.println();
@@ -82,15 +88,14 @@ public class TestCompanies {
         System.out.println();
 
         System.out.println("------------------------- QUERY DELETE COMPANY --------------------------");
-        Company toDelete = companiesDAO.getSingleCompany(1);
+        Company toDelete = companiesDAO.getSingleCompany(5);
         companiesDAO.deleteCompany(toDelete.getId());
         companiesDAO.getAllCompanies().forEach(System.out::println);
         System.out.println();
 
         System.out.println("----------------------- QUERY IS COMPANY EXISTS -------------------------");
-        System.out.println(companiesDAO.isCompanyExists("Email: 4","Password: 4"));
-
-
+        System.out.println("Company number 4 exists: " + companiesDAO.isCompanyExists("Email: 4","Password: 4"));
+        System.out.println();
 
         /**
          * closing all connections.

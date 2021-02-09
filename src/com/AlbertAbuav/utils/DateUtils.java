@@ -50,6 +50,7 @@ public class DateUtils {
      * The method convert a Java "Date" to SQL "Date".
      * @return
      */
+
     public static java.sql.Date convertJavaDateToSqlDate(Date date) {
         return new java.sql.Date(date.getTime());
     }

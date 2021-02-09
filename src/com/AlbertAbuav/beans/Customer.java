@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Customer {
+
+    private static int COUNT = 1;
+
     private int id;
     private String firstName;
     private String lastName;
@@ -12,6 +15,10 @@ public class Customer {
     private List<Coupon> coupons = new ArrayList<>();
 
     public Customer() {
+        this.firstName = "First Name: " + COUNT;
+        this.lastName = "Last Name: " + COUNT;
+        this.email = "Email: " + COUNT;
+        this.password = "Password: " + COUNT++;
     }
 
     public Customer(String firstName, String lastName, String email, String password) {

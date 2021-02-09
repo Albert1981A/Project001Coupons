@@ -12,7 +12,7 @@ public class ConnectionPool {
      */
     private static ConnectionPool instance = null;
     private static final int NUM_OF_CONS = 10;
-    private Stack<Connection> connections = new Stack<>();
+    private final Stack<Connection> connections = new Stack<>();
 
     /**
      * Make the constructor private
@@ -45,7 +45,7 @@ public class ConnectionPool {
      * If the stack is empty the stack will "wait".
      * only when a connection retrieve the Stack
      * Will be "notify" and the "pop" will be executed.
-     * @return
+     * @return connection
      */
     public Connection getConnection() {
         synchronized (connections) {

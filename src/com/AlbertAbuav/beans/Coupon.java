@@ -2,9 +2,12 @@ package com.AlbertAbuav.beans;
 
 import com.AlbertAbuav.utils.DateUtils;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Coupon {
+
+    private static int COUNT = 1;
 
     private int id;
     private int companyID;
@@ -18,6 +21,15 @@ public class Coupon {
     private String image;
 
     public Coupon() {
+        this.companyID = COUNT;
+        this.category = Category.values()[(int)(Math.random()*Category.values().length)];
+        this.title = "Title: " + COUNT;
+        this.description = "Description: " + COUNT;
+        this.startDate = DateUtils.javaDateFromLocalDate(LocalDate.now());
+        this.endDate = DateUtils.javaDateFromLocalDate(LocalDate.now().plusDays(7));
+        this.amount = (int)(Math.random()*21)+30;
+        this.price = (int)(Math.random()*21)+80;
+        this.image = "Image: " + COUNT++;
     }
 
     public Coupon(int companyID, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
