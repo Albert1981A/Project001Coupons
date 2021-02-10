@@ -2,7 +2,9 @@ package com.AlbertAbuav.dbdao;
 
 import com.AlbertAbuav.beans.Category;
 import com.AlbertAbuav.beans.Coupon;
+import com.AlbertAbuav.beans.CustomersVsCoupons;
 import com.AlbertAbuav.dao.CouponsDAO;
+import com.AlbertAbuav.dao.CustomersVsCouponsDAO;
 import com.AlbertAbuav.db.ConnectionPool;
 import com.AlbertAbuav.utils.DateUtils;
 
@@ -16,12 +18,12 @@ import java.util.List;
 public class CouponsDBDAO implements CouponsDAO {
 
     private static final String QUERY_INSERT_COUPON = "INSERT INTO `couponsystem`.`coupons` (`company_id`, `category_id`, `title`, `description`, `start_date`, `end_date`, `amount`, `price`, `image`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
-    private static final String QUERY_UPDATE_COUPON = "";
-    private static final String QUERY_DELETE_COUPON = "";
+    private static final String QUERY_UPDATE_COUPON = "UPDATE `couponsystem`.`coupons` SET `company_id` = ?, `category_id` = ?, `title` = ?, `description` = ?, `start_date` = ?, `end_date` = ?, `amount` = ?, `price` = ?, `image` = ? WHERE (`id` = ?);";
+    private static final String QUERY_DELETE_COUPON = "DELETE FROM `couponsystem`.`coupons` WHERE (`id` = ?);";
     private static final String QUERY_GET_ALL_COUPONS = "SELECT * FROM `couponsystem`.`coupons`;";
-    private static final String QUERY_GET_SINGLE_COUPON = "";
-    private static final String QUERY_ADD_COUPON_PURCHASE = "";
-    private static final String QUERY_DELETE_COUPON_PURCHASE = "";
+    private static final String QUERY_GET_SINGLE_COUPON = "SELECT * FROM `couponsystem`.`coupons` WHERE (`id` = ?);";
+
+    CustomersVsCouponsDAO customersVsCouponsDAO = new CustomersVsCouponsDBDAO();
 
     /**
      * To perform an operation from the code to the database there are five steps.
@@ -44,8 +46,8 @@ public class CouponsDBDAO implements CouponsDAO {
             statement.setInt(2, (coupon.getCategory().ordinal())+1);
             statement.setString(3, coupon.getTitle());
             statement.setString(4, coupon.getDescription());
-            statement.setDate(5, DateUtils.convertJavaDateToSqlDate(coupon.getStartDate()));
-            statement.setDate(6, DateUtils.convertJavaDateToSqlDate(coupon.getEndDate()));
+            statement.setDate(5, DateUtils.convertJavaDateToSqlDate(DateUtils.addOneDayToUtilDate(coupon.getStartDate())));
+            statement.setDate(6, DateUtils.convertJavaDateToSqlDate(DateUtils.addOneDayToUtilDate(coupon.getEndDate())));
             statement.setInt(7, coupon.getAmount());
             statement.setDouble(8, coupon.getPrice());
             statement.setString(9, coupon.getImage());
@@ -60,12 +62,47 @@ public class CouponsDBDAO implements CouponsDAO {
 
     @Override
     public void updateCoupon(Coupon coupon) {
-
+        Connection connection = null;
+        try {
+            // Step 2
+            connection = ConnectionPool.getInstance().getConnection();
+            // Step 3
+            PreparedStatement statement = connection.prepareStatement(QUERY_UPDATE_COUPON);
+            statement.setInt(1, coupon.getCompanyID());
+            statement.setInt(2, (coupon.getCategory().ordinal())+1);
+            statement.setString(3, coupon.getTitle());
+            statement.setString(4, coupon.getDescription());
+            statement.setDate(5, DateUtils.convertJavaDateToSqlDate(coupon.getStartDate()));
+            statement.setDate(6, DateUtils.convertJavaDateToSqlDate(coupon.getEndDate()));
+            statement.setInt(7, coupon.getAmount());
+            statement.setDouble(8, coupon.getPrice());
+            statement.setString(9, coupon.getImage());
+            statement.setInt(10, coupon.getId());
+            statement.execute();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            // Step 5
+            ConnectionPool.getInstance().returnConnection(connection);
+        }
     }
 
     @Override
     public void deleteCoupon(int couponID) {
-
+        Connection connection = null;
+        try {
+            // Step 2
+            connection = ConnectionPool.getInstance().getConnection();
+            // Step 3
+            PreparedStatement statement = connection.prepareStatement(QUERY_DELETE_COUPON);
+            statement.setInt(1, couponID);
+            statement.execute();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            // Step 5
+            ConnectionPool.getInstance().returnConnection(connection);
+        }
     }
 
     @Override
@@ -104,16 +141,49 @@ public class CouponsDBDAO implements CouponsDAO {
 
     @Override
     public Coupon getSingleCoupon(int couponID) {
-        return null;
+        Coupon coupon = null;
+        Connection connection = null;
+        try {
+            // Step 2
+            connection = ConnectionPool.getInstance().getConnection();
+            // Step 3
+            PreparedStatement statement = connection.prepareStatement(QUERY_GET_SINGLE_COUPON);
+            statement.setInt(1, couponID);
+            // Step 4
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            int id = resultSet.getInt(1);
+            int company_id = resultSet.getInt(2);
+            Category category = Category.values()[(resultSet.getInt(3))-1];
+            String title = resultSet.getString(4);
+            String description = resultSet.getString(5);
+            Date start_date = resultSet.getDate(6);
+            Date end_date = resultSet.getDate(7);
+            int amount = resultSet.getInt(8);
+            double price = resultSet.getDouble(9);
+            String image = resultSet.getString(10);
+            coupon = new Coupon(id, company_id, category, title, description, start_date, end_date, amount, price, image);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            // Step 5
+            ConnectionPool.getInstance().returnConnection(connection);
+        }
+        return coupon;
     }
 
     @Override
     public void addCouponPurchase(int customerID, int couponID) {
-        // TODO pending to step 5
+        customersVsCouponsDAO.addCustomersVsCoupons(customerID, couponID);
     }
 
     @Override
     public void deleteCouponPurchase(int customerID, int couponID) {
-        // TODO pending to step 5
+        customersVsCouponsDAO.deleteCustomersVsCoupons(customerID, couponID);
+    }
+
+    @Override
+    public List<CustomersVsCoupons> getAllCustomersCoupons(int customerID) {
+        return customersVsCouponsDAO.getAllCustomersCoupons(customerID);
     }
 }

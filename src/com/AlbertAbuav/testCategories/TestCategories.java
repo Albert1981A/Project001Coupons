@@ -1,4 +1,4 @@
-package com.AlbertAbuav;
+package com.AlbertAbuav.testCategories;
 
 import com.AlbertAbuav.dao.CategoriesDAO;
 import com.AlbertAbuav.db.ConnectionPool;

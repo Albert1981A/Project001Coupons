@@ -3,6 +3,7 @@ package com.AlbertAbuav.utils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtils {
@@ -61,6 +62,13 @@ public class DateUtils {
      */
     public static Date javaDateFromLocalDate(LocalDate localDate) {
         return java.sql.Date.valueOf(localDate);
+    }
+
+    public static Date addOneDayToUtilDate(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, 1);
+        return cal.getTime();
     }
 
 

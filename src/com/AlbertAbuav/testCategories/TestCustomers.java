@@ -1,4 +1,4 @@
-package com.AlbertAbuav;
+package com.AlbertAbuav.testCategories;
 
 import com.AlbertAbuav.beans.Customer;
 import com.AlbertAbuav.dao.CustomersDAO;

@@ -1,18 +1,10 @@
-package com.AlbertAbuav;
+package com.AlbertAbuav.testCategories;
 
-import com.AlbertAbuav.beans.Company;
-import com.AlbertAbuav.beans.Coupon;
-import com.AlbertAbuav.beans.Customer;
-import com.AlbertAbuav.dao.CategoriesDAO;
-import com.AlbertAbuav.dao.CompaniesDAO;
-import com.AlbertAbuav.dao.CouponsDAO;
-import com.AlbertAbuav.dao.CustomersDAO;
+import com.AlbertAbuav.beans.*;
+import com.AlbertAbuav.dao.*;
 import com.AlbertAbuav.db.ConnectionPool;
 import com.AlbertAbuav.db.DatabaseManager;
-import com.AlbertAbuav.dbdao.CategoriesDBDAO;
-import com.AlbertAbuav.dbdao.CompaniesDBDAO;
-import com.AlbertAbuav.dbdao.CouponsDBDAO;
-import com.AlbertAbuav.dbdao.CustomersDBDAO;
+import com.AlbertAbuav.dbdao.*;
 import com.AlbertAbuav.utils.ArtUtils;
 import com.AlbertAbuav.utils.DateUtils;
 
@@ -110,7 +102,6 @@ public class TestCoupons {
         customersDAO.getAllCustomers().forEach(System.out::println);
         System.out.println();
 
-
         System.out.println(ArtUtils.COUPONS_DAO);
         System.out.println();
 
@@ -121,9 +112,9 @@ public class TestCoupons {
         Coupon coupon2 = new Coupon();
         System.out.println(coupon1);
         System.out.println(coupon2);
+        System.out.println("Checking Date SQL before entering the DB: " + DateUtils.convertJavaDateToSqlDate(coupon1.getStartDate()));
+        System.out.println("Checking Date SQL before entering the DB: " + DateUtils.convertJavaDateToSqlDate(coupon2.getStartDate()));
         System.out.println();
-        System.out.println(DateUtils.convertJavaDateToSqlDate(coupon1.getStartDate()));
-        System.out.println(DateUtils.convertJavaDateToSqlDate(coupon2.getStartDate()));
 
         System.out.println("-------------------------- QUERY ADD COUPON ----------------------------");
         couponsDAO.addCoupon(coupon1);
@@ -132,6 +123,46 @@ public class TestCoupons {
 
         System.out.println("------------------------ QUERY GET ALL COUPONS -------------------------");
         couponsDAO.getAllCoupons().forEach(System.out::println);
+
+        System.out.println("------------------------- QUERY UPDATE COUPON --------------------------");
+        Coupon toUpdate = couponsDAO.getSingleCoupon(1);
+        toUpdate.setCategory(Category.VACATIONS_IN_ISRAEL);
+        couponsDAO.updateCoupon(toUpdate);
+        couponsDAO.getAllCoupons().forEach(System.out::println);
+        System.out.println();
+
+        System.out.println("----------------------- QUERY GET SINGLE COUPON ------------------------");
+        System.out.println(couponsDAO.getSingleCoupon(1));
+        System.out.println();
+
+        System.out.println("------------------------- QUERY DELETE COUPON --------------------------");
+        Coupon toDelete = couponsDAO.getSingleCoupon(2);
+        System.out.println("Deleting Coupon: " + toDelete);
+        couponsDAO.deleteCoupon(toDelete.getId());
+        System.out.println("Coupons Left: ");
+        couponsDAO.getAllCoupons().forEach(System.out::println);
+        System.out.println();
+
+        System.out.println("---------------------- QUERY_ADD_COUPON_PURCHASE ------------------------");
+        couponsDAO.addCouponPurchase(1, 1);
+        System.out.println("Purchase a coupon by customer: " + customersDAO.getSingleCustomer(1));
+        System.out.println("He Purchase coupon: " + couponsDAO.getSingleCoupon(1));
+        System.out.println();
+
+        System.out.println("---------------- QUERY_GET_ALL_CUSTOMER_COUPON_PURCHASE------------------");
+        couponsDAO.getAllCustomersCoupons(1).forEach(System.out::println);
+        System.out.println();
+
+        System.out.println("--------------------- QUERY_DELETE_COUPON_PURCHASE-----------------------");
+        couponsDAO.deleteCouponPurchase(1, 1);
+        System.out.println("Deleted coupon by customer: " + customersDAO.getSingleCustomer(1));
+        System.out.println("He Deleted coupon: " + couponsDAO.getSingleCoupon(1));
+        System.out.println();
+
+        System.out.println("---------------- QUERY_GET_ALL_CUSTOMER_COUPON_PURCHASE------------------");
+        couponsDAO.getAllCustomersCoupons(1).forEach(System.out::println);
+        System.out.println();
+
 
         /**
          * closing all connections.

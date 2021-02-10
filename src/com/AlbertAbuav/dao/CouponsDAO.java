@@ -1,6 +1,7 @@
 package com.AlbertAbuav.dao;
 
 import com.AlbertAbuav.beans.Coupon;
+import com.AlbertAbuav.beans.CustomersVsCoupons;
 
 import java.util.List;
 
@@ -19,5 +20,7 @@ public interface CouponsDAO {
     void addCouponPurchase(int customerID, int couponID);
 
     void deleteCouponPurchase(int customerID, int couponID);
+
+    List<CustomersVsCoupons> getAllCustomersCoupons(int customerID);
 
 }

@@ -1,4 +1,4 @@
-package com.AlbertAbuav;
+package com.AlbertAbuav.testUtils;
 
 import com.AlbertAbuav.db.ConnectionPool;
 
