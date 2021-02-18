@@ -9,6 +9,10 @@ import com.AlbertAbuav.dbdao.CouponsDBDAO;
 import com.AlbertAbuav.dbdao.CustomersDBDAO;
 
 public abstract class ClientFacade {
+    /**
+     * An abstract class that connects the "Facade" layer to the "LoginManager" class.
+     * It makes the connection of the "Facade" to the Database by the "DAO" and "DBDAO" classes.
+     */
     protected CompaniesDAO companiesDAO = new CompaniesDBDAO();
     protected CustomersDAO customersDAO = new CustomersDBDAO();
     protected CouponsDAO couponsDAO = new CouponsDBDAO();

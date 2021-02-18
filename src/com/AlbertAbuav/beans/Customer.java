@@ -1,11 +1,12 @@
 package com.AlbertAbuav.beans;
 
+import com.AlbertAbuav.utils.FactoryUtils;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Customer {
-
-    private static int COUNT = 1;
 
     private int id;
     private String firstName;
@@ -15,10 +16,10 @@ public class Customer {
     private List<Coupon> coupons = new ArrayList<>();
 
     public Customer() {
-        this.firstName = "First Name: " + COUNT;
-        this.lastName = "Last Name: " + COUNT;
-        this.email = "Email: " + COUNT;
-        this.password = "Password: " + COUNT++;
+        this.firstName = FactoryUtils.generateFirstName();
+        this.lastName = FactoryUtils.generateLastName();
+        this.email = createEmail(firstName);
+        this.password = FactoryUtils.createPassword();
     }
 
     public Customer(String firstName, String lastName, String email, String password) {
@@ -94,6 +95,11 @@ public class Customer {
                 ", password='" + password + '\'' +
                 ", coupons=" + coupons +
                 '}';
+    }
+
+    public String createEmail(String firstName) {
+        String email = firstName + FactoryUtils.generateCustomerEmailType();
+        return email.toLowerCase(Locale.ROOT);
     }
 
 }

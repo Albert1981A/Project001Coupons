@@ -94,7 +94,8 @@ public class TestCustomers {
         System.out.println();
 
         System.out.println("----------------------- QUERY IS CUSTOMER EXISTS -------------------------");
-        System.out.println("Customer number 4 exists: " + customersDAO.isCustomerExists("Email: 4", "Password: 4"));
+        Customer cu1 = customersDAO.getSingleCustomer(4);
+        System.out.println("Customer number 4 exists: " + customersDAO.isCustomerExists(cu1.getEmail(), cu1.getPassword()));
         System.out.println();
 
         /**

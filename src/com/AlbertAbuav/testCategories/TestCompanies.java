@@ -94,7 +94,8 @@ public class TestCompanies {
         System.out.println();
 
         System.out.println("----------------------- QUERY IS COMPANY EXISTS -------------------------");
-        System.out.println("Company number 4 exists: " + companiesDAO.isCompanyExists("Email: 4","Password: 4"));
+        Company C1 = companiesDAO.getSingleCompany(4);
+        System.out.println("Company number 4 exists: " + companiesDAO.isCompanyExists(C1.getEmail(),C1.getPassword()));
         System.out.println();
 
         /**

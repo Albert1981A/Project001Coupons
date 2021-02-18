@@ -1,11 +1,13 @@
 package com.AlbertAbuav.beans;
 
+import com.AlbertAbuav.utils.CompaniesType;
+import com.AlbertAbuav.utils.FactoryUtils;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Company {
-
-    private static int COUNT = 1;
 
     private int id;
     private String name;
@@ -14,9 +16,9 @@ public class Company {
     private List<Coupon> coupons = new ArrayList<>();
 
     public Company() {
-        this.name = "Name: " + COUNT;
-        this.email = "Email: " + COUNT;
-        this.password = "Password: " + COUNT++;
+        this.name = CompaniesType.values()[(int)(Math.random() * CompaniesType.values().length)].toString();
+        this.email = createCompanyEmail();
+        this.password = FactoryUtils.createPassword();
     }
 
     public Company(String name, String email, String password) {
@@ -81,6 +83,11 @@ public class Company {
                 ", password='" + password + '\'' +
                 ", coupons=" + coupons +
                 '}';
+    }
+
+    public String createCompanyEmail() {
+        String email = FactoryUtils.generateFirstName()+"@" + name + ".com";
+        return email.toLowerCase(Locale.ROOT);
     }
 
 }

@@ -22,5 +22,14 @@ public class TestArt {
 
         System.out.println(ArtUtils.CUSTOMERS_VS_COUPONS_DAO);
         System.out.println();
+
+        System.out.println(ArtUtils.ADMIN_FACADE);
+        System.out.println();
+
+        System.out.println(ArtUtils.COMPANIES_FACADE);
+        System.out.println();
+
+        System.out.println(ArtUtils.CUSTOMERS_FACADE);
+        System.out.println();
     }
 }
