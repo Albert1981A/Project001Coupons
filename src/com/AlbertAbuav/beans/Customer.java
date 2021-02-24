@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class Customer {
-
+    private static int COUNT = 1;
     private int id;
     private String firstName;
     private String lastName;
@@ -98,7 +98,7 @@ public class Customer {
     }
 
     public String createEmail(String firstName) {
-        String email = firstName + FactoryUtils.generateCustomerEmailType();
+        String email = firstName + (COUNT++) + FactoryUtils.generateCustomerEmailType();
         return email.toLowerCase(Locale.ROOT);
     }
 

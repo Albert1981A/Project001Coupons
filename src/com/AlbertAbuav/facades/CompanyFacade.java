@@ -8,6 +8,15 @@ import java.util.List;
 
 public class CompanyFacade extends ClientFacade{
 
+    private int companyID;
+
+    public CompanyFacade() {
+    }
+
+    public CompanyFacade(int companyID) {
+        this.companyID = companyID;
+    }
+
     /**
      * Login method, the method is implemented from the abstract class "ClientFacade"
      * @param email String
@@ -16,7 +25,11 @@ public class CompanyFacade extends ClientFacade{
      */
     @Override
     public boolean login(String email, String password)  {
-        return companiesDAO.isCompanyExists(email, password);
+        boolean isExist = companiesDAO.isCompanyExists(email, password);
+        if (isExist) {
+            companyID = companiesDAO.getCompanyByEmailAndPassword(email, password).getId();
+        }
+        return isExist;
     }
 
     /**

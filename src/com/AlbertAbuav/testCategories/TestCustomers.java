@@ -60,15 +60,14 @@ public class TestCustomers {
          */
         System.out.println("-------------------------- QUERY ADD CUSTOMER ---------------------------");
         Customer c1 = new Customer();
-        Customer c2 = new Customer();
-        Customer c3 = new Customer();
-        Customer c4 = new Customer();
-        Customer c5 = new Customer();
-
         customersDAO.addCustomer(c1);
+        Customer c2 = new Customer();
         customersDAO.addCustomer(c2);
+        Customer c3 = new Customer();
         customersDAO.addCustomer(c3);
+        Customer c4 = new Customer();
         customersDAO.addCustomer(c4);
+        Customer c5 = new Customer();
         customersDAO.addCustomer(c5);
         System.out.println();
 
@@ -96,6 +95,12 @@ public class TestCustomers {
         System.out.println("----------------------- QUERY IS CUSTOMER EXISTS -------------------------");
         Customer cu1 = customersDAO.getSingleCustomer(4);
         System.out.println("Customer number 4 exists: " + customersDAO.isCustomerExists(cu1.getEmail(), cu1.getPassword()));
+        System.out.println();
+
+        System.out.println("------------------ GET CUSTOMER BY EMAIL AND PASSWORD --------------------");
+        Customer cu2 = customersDAO.getSingleCustomer(3);
+        System.out.println("Customer number 3 exists: " + customersDAO.getCustomerByEmailAndPassword(cu2.getEmail(), cu2.getPassword()));
+        System.out.println();
         System.out.println();
 
         /**

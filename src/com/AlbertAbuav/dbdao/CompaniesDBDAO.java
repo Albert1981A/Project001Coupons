@@ -164,4 +164,30 @@ public class CompaniesDBDAO implements CompaniesDAO {
         }
         return company;
     }
+
+    @Override
+    public Company getCompanyByEmailAndPassword(String email, String password) {
+        Company company = null;
+        Connection connection = null;
+        try {
+            // Step 2
+            connection = ConnectionPool.getInstance().getConnection();
+            // Step 3
+            PreparedStatement statement = connection.prepareStatement(QUERY_IS_COMPANY_EXISTS);
+            statement.setString(1, email);
+            statement.setString(2, password);
+            // Step 4
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            int id = resultSet.getInt(1);
+            String name = resultSet.getString(2);
+            company = new Company(id, name, email, password);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            // Step 5
+            ConnectionPool.getInstance().returnConnection(connection);
+        }
+        return company;
+    }
 }

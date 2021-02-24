@@ -58,17 +58,17 @@ public class TestCompanies {
         /**
          * using the CompaniesDBDAO query's.
          */
-        Company c1 = new Company();
-        Company c2 = new Company();
-        Company c3 = new Company();
-        Company c4 = new Company();
-        Company c5 = new Company();
 
         System.out.println("-------------------------- QUERY ADD COMPANY ---------------------------");
+        Company c1 = new Company();
         companiesDAO.addCompany(c1);
+        Company c2 = new Company();
         companiesDAO.addCompany(c2);
+        Company c3 = new Company();
         companiesDAO.addCompany(c3);
+        Company c4 = new Company();
         companiesDAO.addCompany(c4);
+        Company c5 = new Company();
         companiesDAO.addCompany(c5);
         System.out.println();
 
@@ -96,6 +96,11 @@ public class TestCompanies {
         System.out.println("----------------------- QUERY IS COMPANY EXISTS -------------------------");
         Company C1 = companiesDAO.getSingleCompany(4);
         System.out.println("Company number 4 exists: " + companiesDAO.isCompanyExists(C1.getEmail(),C1.getPassword()));
+        System.out.println();
+
+        System.out.println("------------------ GET COMPANY BY EMAIL AND PASSWORD --------------------");
+        Company C2 = companiesDAO.getSingleCompany(3);
+        System.out.println("Company number 3 exists: " + companiesDAO.getCompanyByEmailAndPassword(C2.getEmail(),C2.getPassword()));
         System.out.println();
 
         /**

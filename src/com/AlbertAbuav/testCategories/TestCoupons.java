@@ -59,7 +59,7 @@ public class TestCoupons {
         categoriesDAO.addCategories();
 
         System.out.println("----------------------- QUERY GET ALL CATEGORIES ------------------------");
-        categoriesDAO.getAllCategories();
+        categoriesDAO.getAllCategories().forEach(System.out::println);
         System.out.println();
 
         System.out.println(ArtUtils.COMPANIES_DAO);
@@ -67,17 +67,15 @@ public class TestCoupons {
 
         CompaniesDAO companiesDAO = new CompaniesDBDAO();
 
-        System.out.println("-------------------------- CREATE COMPANIES ---------------------------");
+        System.out.println("-------------------------- QUERY ADD COMPANY ---------------------------");
         Company c1 = new Company();
-        Company c2 = new Company();
+        companiesDAO.addCompany(c1);
         System.out.println(c1);
+        Company c2 = new Company();
+        companiesDAO.addCompany(c2);
         System.out.println(c2);
         System.out.println();
 
-        System.out.println("-------------------------- QUERY ADD COMPANY ---------------------------");
-        companiesDAO.addCompany(c1);
-        companiesDAO.addCompany(c2);
-        System.out.println();
         System.out.println("----------------------- QUERY GET ALL COMPANIES ------------------------");
         companiesDAO.getAllCompanies().forEach(System.out::println);
         System.out.println();

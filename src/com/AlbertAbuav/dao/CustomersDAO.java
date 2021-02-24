@@ -1,5 +1,6 @@
 package com.AlbertAbuav.dao;
 
+import com.AlbertAbuav.beans.Company;
 import com.AlbertAbuav.beans.Customer;
 
 import java.util.List;
@@ -17,5 +18,7 @@ public interface CustomersDAO {
     List<Customer> getAllCustomers();
 
     Customer getSingleCustomer(int customerID);
+
+    Customer getCustomerByEmailAndPassword(String email, String password);
 
 }

@@ -169,4 +169,31 @@ public class CustomersDBDAO implements CustomersDAO {
         }
         return customer;
     }
+
+    @Override
+    public Customer getCustomerByEmailAndPassword(String email, String password) {
+        Customer customer = null;
+        Connection connection = null;
+        try {
+            // Step 2
+            connection = ConnectionPool.getInstance().getConnection();
+            // Step 3
+            PreparedStatement statement = connection.prepareStatement(QUERY_IS_CUSTOMER_EXISTS);
+            statement.setString(1, email);
+            statement.setString(2, password);
+            // Step 4
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            int id = resultSet.getInt(1);
+            String firsName = resultSet.getString(2);
+            String lastName = resultSet.getString(3);
+            customer = new Customer(id, firsName, lastName, email, password);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            // Step 5
+            ConnectionPool.getInstance().returnConnection(connection);
+        }
+        return customer;
+    }
 }

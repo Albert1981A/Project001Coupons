@@ -16,7 +16,7 @@ public class Company {
     private List<Coupon> coupons = new ArrayList<>();
 
     public Company() {
-        this.name = CompaniesType.values()[(int)(Math.random() * CompaniesType.values().length)].toString();
+        this.name = FactoryUtils.generateCompanyName();
         this.email = createCompanyEmail();
         this.password = FactoryUtils.createPassword();
     }
