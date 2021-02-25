@@ -1,5 +1,6 @@
 package com.AlbertAbuav.testCategories;
 
+import com.AlbertAbuav.beans.Category;
 import com.AlbertAbuav.beans.Company;
 import com.AlbertAbuav.beans.Coupon;
 import com.AlbertAbuav.beans.Customer;
@@ -295,7 +296,7 @@ public class TestFacade {
         System.out.println("--------------------------------- Update a company coupon ------------------------------");
         try {
             Coupon couponToUpdate = companyFacade.getTheLoggedCompanyDetails().getCoupons().get(1);
-            System.out.println("Trying to update coupon id 2: ");
+            System.out.println("Trying to update the \"amount\" of coupon id 2: ");
             System.out.println(couponToUpdate);
             couponToUpdate.setAmount(23);
             companyFacade.updateCoupon(couponToUpdate);
@@ -305,6 +306,75 @@ public class TestFacade {
         }
         System.out.println();
 
+        System.out.println("------------------------ Attempt to Update a company coupons title ---------------------");
+        try {
+            Coupon couponToUpdate2 = companyFacade.getTheLoggedCompanyDetails().getCoupons().get(2);
+            System.out.println("Trying to update the \"title\" of coupon id 3: ");
+            System.out.println(couponToUpdate2);
+            couponToUpdate2.setTitle("The new Title!");
+            companyFacade.updateCoupon(couponToUpdate2);
+            System.out.println(companyFacade.getTheLoggedCompanyDetails().getCoupons().get(2));
+        } catch (invalidCompanyException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
+        System.out.println("-------------------------- Attempt to Update a company coupons id ----------------------");
+        try {
+            Coupon couponToUpdate3 = companyFacade.getTheLoggedCompanyDetails().getCoupons().get(0);
+            System.out.println("Trying to update the \"id\" of coupon id 1: ");
+            System.out.println(couponToUpdate3);
+            couponToUpdate3.setId(7);
+            companyFacade.updateCoupon(couponToUpdate3);
+            System.out.println(companyFacade.getTheLoggedCompanyDetails().getCoupons().get(0));
+        } catch (invalidCompanyException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
+        System.out.println("-------------------------- Attempt to Update a coupons company id ----------------------");
+        try {
+            Coupon couponToUpdate4 = companyFacade.getTheLoggedCompanyDetails().getCoupons().get(0);
+            System.out.println("Trying to update the \"company id\" of coupon id 1: ");
+            System.out.println(couponToUpdate4);
+            couponToUpdate4.setCompanyID(7);
+            companyFacade.updateCoupon(couponToUpdate4);
+            System.out.println(companyFacade.getTheLoggedCompanyDetails().getCoupons().get(0));
+        } catch (invalidCompanyException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
+        System.out.println("------------------------- Attempt to Update a coupon id and Title ----------------------");
+        try {
+            Coupon couponToUpdate5 = companyFacade.getTheLoggedCompanyDetails().getCoupons().get(0);
+            System.out.println("Trying to update the \"id\" of coupon id 1: ");
+            System.out.println(couponToUpdate5);
+            couponToUpdate5.setId(3);
+            couponToUpdate5.setTitle("The new Title2");
+            companyFacade.updateCoupon(couponToUpdate5);
+            System.out.println(companyFacade.getTheLoggedCompanyDetails().getCoupons().get(2));
+        } catch (invalidCompanyException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("The system will choose to change the object according to its - id!");
+        System.out.println();
+
+        System.out.println("---------------- Get all coupons from a specific category of the company ---------------");
+        try {
+            Category categoryToCheck = companyFacade.getTheLoggedCompanyDetails().getCoupons().get(1).getCategory();
+            companyFacade.getAllCompanyCouponsOfSpecificCategory(categoryToCheck).forEach(System.out::println);
+        } catch (invalidCompanyException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
+        System.out.println("-------------- Get all coupons up to the maximum price set by the company --------------");
+        try {
+            companyFacade.getAllCompanyCouponsUpToMaxPrice(75).forEach(System.out::println);
+        } catch (invalidCompanyException e) {
+            System.out.println(e.getMessage());
+        }
 
 
         System.out.println(ArtUtils.CUSTOMERS_FACADE);

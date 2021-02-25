@@ -74,9 +74,35 @@ public class CompanyFacade extends ClientFacade {
      *
      * @param coupon Coupon
      */
-    public void updateCoupon(Coupon coupon) {
+    public void updateCoupon(Coupon coupon) throws invalidCompanyException {
+        List<Coupon> companyCoupons = getAllCompanyCoupons();
+        Coupon couponToCompare = null;
+        for (Coupon coupon1 : companyCoupons) {
+            if (coupon1.getTitle().equals(coupon.getTitle())) {
+                couponToCompare = coupon1;
+            }
+        }
+        if (couponToCompare == null) {
+            for (Coupon coupon2 : companyCoupons) {
+                if (coupon2.getId() == coupon.getId()) {
+                    if (coupon2.getCompanyID() == coupon.getCompanyID()) {
+                        couponsDAO.updateCoupon(coupon);
+                        return;
+                    } else {
+                        throw new invalidCompanyException("The \"coupon id\" or the \"company id\" cannot be updated");
+                    }
+                } else if (coupon2.getCompanyID() != coupon.getCompanyID()) {
+                    throw new invalidCompanyException("The \"coupon id\" or the \"company id\" cannot be updated");
+                }
+            }
+        } else if (couponToCompare.getId() == coupon.getId()) {
+            if (couponToCompare.getCompanyID() != coupon.getCompanyID()) {
+                throw new invalidCompanyException("The \"coupon id\" or the \"company id\" cannot be updated");
+            }
+        } else if (couponToCompare.getId() != coupon.getId()) {
+            throw new invalidCompanyException("The \"coupon id\" or the \"company id\" cannot be updated");
+        }
         couponsDAO.updateCoupon(coupon);
-        //TODO - Constraints
     }
 
     /**
@@ -120,8 +146,15 @@ public class CompanyFacade extends ClientFacade {
      * @param category Category
      * @return List
      */
-    public List<Coupon> getAllCompanyCouponsOfSpecificCategory(Category category) {
-        return null;
+    public List<Coupon> getAllCompanyCouponsOfSpecificCategory(Category category) throws invalidCompanyException {
+        List<Coupon> companyCoupons = getAllCompanyCoupons();
+        List<Coupon> companyCouponsByCategory = new ArrayList<>();
+        for (Coupon coupon3 : companyCoupons) {
+            if (coupon3.getCategory().equals(category)) {
+                companyCouponsByCategory.add(coupon3);
+            }
+        }
+        return companyCouponsByCategory;
     }
 
     /**
@@ -131,8 +164,15 @@ public class CompanyFacade extends ClientFacade {
      * @param maxPrice double
      * @return List
      */
-    public List<Coupon> getAllCompanyCouponsUpToMaxPrice(double maxPrice) {
-        return null;
+    public List<Coupon> getAllCompanyCouponsUpToMaxPrice(double maxPrice) throws invalidCompanyException {
+        List<Coupon> companyCoupons = getAllCompanyCoupons();
+        List<Coupon> companyCouponsByMax = new ArrayList<>();
+        for (Coupon coupon4 : companyCoupons) {
+            if (coupon4.getPrice() <= maxPrice) {
+                companyCouponsByMax.add(coupon4);
+            }
+        }
+        return companyCouponsByMax;
     }
 
     /**

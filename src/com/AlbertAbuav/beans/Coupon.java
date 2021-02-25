@@ -40,7 +40,7 @@ public class Coupon {
         this.startDate = DateUtils.javaDateFromLocalDate(LocalDate.now());
         this.endDate = DateUtils.javaDateFromLocalDate(LocalDate.now().plusDays(7));
         this.amount = (int)(Math.random()*21)+30;
-        this.price = (int)(Math.random()*21)+80;
+        this.price = (int)(Math.random()*41)+60;
         this.image = "Image: " + COUNT++;
     }
 
