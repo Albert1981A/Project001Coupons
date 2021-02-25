@@ -8,12 +8,12 @@ import com.AlbertAbuav.db.ConnectionPool;
 import com.AlbertAbuav.db.DatabaseManager;
 import com.AlbertAbuav.dbdao.CategoriesDBDAO;
 import com.AlbertAbuav.exceptions.invalidAdminException;
+import com.AlbertAbuav.exceptions.invalidCompanyException;
 import com.AlbertAbuav.facades.AdminFacade;
-import com.AlbertAbuav.facades.ClientFacade;
+import com.AlbertAbuav.facades.CompanyFacade;
 import com.AlbertAbuav.login.ClientType;
 import com.AlbertAbuav.login.LoginManager;
 import com.AlbertAbuav.utils.ArtUtils;
-import com.AlbertAbuav.utils.FactoryUtils;
 
 public class TestFacade {
 
@@ -123,7 +123,7 @@ public class TestFacade {
 
         System.out.println("------------------------------------- Update a Company ---------------------------------");
         Company companyToUpdate = adminFacade.getSingleCompany(2);
-        System.out.println("Updating Company: " + companyToUpdate);
+        System.out.println("Updating Company: \n" + companyToUpdate);
         companyToUpdate.setEmail("email.email.com");
         try {
             adminFacade.updateCompany(companyToUpdate);
@@ -136,7 +136,7 @@ public class TestFacade {
 
         System.out.println("----------------------------- Attempt to update a Company's id -------------------------");
         Company companyToUpdate2 = adminFacade.getSingleCompany(3);
-        System.out.println("Updating Company: " + companyToUpdate2);
+        System.out.println("Updating Company: \n" + companyToUpdate2);
         companyToUpdate2.setId(2);
         try {
             adminFacade.updateCompany(companyToUpdate2);
@@ -147,7 +147,7 @@ public class TestFacade {
 
         System.out.println("----------------------------- Attempt to update a Company's Name -------------------------");
         Company companyToUpdate3 = adminFacade.getSingleCompany(4);
-        System.out.println("Updating Company: " + companyToUpdate3);
+        System.out.println("Updating Company: \n" + companyToUpdate3);
         companyToUpdate3.setName(adminFacade.getSingleCompany(5).getName());
         try {
             adminFacade.updateCompany(companyToUpdate3);
@@ -158,7 +158,7 @@ public class TestFacade {
 
         System.out.println("--------- Attempt to update a company whose name does not exist in the system ----------");
         Company companyToUpdate4 = adminFacade.getSingleCompany(5);
-        System.out.println("Updating Company: " + companyToUpdate4);
+        System.out.println("Updating Company: \n" + companyToUpdate4);
         companyToUpdate4.setName("Looly");
         try {
             adminFacade.updateCompany(companyToUpdate4);
@@ -206,7 +206,7 @@ public class TestFacade {
 
         System.out.println("-------------------------------------- Update customer ---------------------------------");
         Customer toUpdate = adminFacade.getSingleCustomer(1);
-        System.out.println("Update First name of customer: " + toUpdate);
+        System.out.println("Update First name of customer: \n" + toUpdate);
         toUpdate.setFirstName("Laura");
         try {
             adminFacade.updateCustomer(toUpdate);
@@ -218,7 +218,7 @@ public class TestFacade {
 
         System.out.println("------------------------- Attempt to update a customer email and id --------------------");
         Customer toUpdate1 = adminFacade.getSingleCustomer(2);
-        System.out.println("Update email of customer: " + toUpdate1);
+        System.out.println("Update email of customer: \n" + toUpdate1);
         toUpdate1.setEmail("email@email.com");
         toUpdate1.setId(3);
         System.out.println(toUpdate1);
@@ -228,21 +228,85 @@ public class TestFacade {
             System.out.println(e.getMessage());
         }
         System.out.println(adminFacade.getSingleCustomer(3));
+        System.out.println("The system will choose to change the object according to its - id!");
         System.out.println();
 
         System.out.println("------------------------------ Attempt to update a customer id -------------------------");
         Customer toUpdate2 = adminFacade.getSingleCustomer(4);
-        System.out.println("Update id of customer: " + toUpdate2);
+        System.out.println("Update id of customer: \n" + toUpdate2);
         toUpdate2.setId(2);
         try {
             adminFacade.updateCustomer(toUpdate2);
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
         }
-        System.out.println(adminFacade.getSingleCustomer(4));
         System.out.println();
 
+
+
+        /**
+         * Login to Company Facade
+         */
         System.out.println(ArtUtils.COMPANIES_FACADE);
+        Company loggedCompany = adminFacade.getSingleCompany(4);
+        CompanyFacade companyFacade = (CompanyFacade)loginManager.login(loggedCompany.getEmail(), loggedCompany.getPassword(), ClientType.COMPANY);
+        System.out.println("----------------------------- Checking Connection to Company ---------------------------");
+        System.out.println(companyFacade);
+        System.out.println();
+
+        System.out.println("---------------------------- Adding new coupon to the company --------------------------");
+        System.out.println("Trying to get all companies coupons when their is no coupons in the system:");
+        try {
+            companyFacade.getAllCompanyCoupons().forEach(System.out::println);
+        } catch (invalidCompanyException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
+        System.out.println("Trying to add coupon: ");
+        Coupon couponToAdd1 = new Coupon(loggedCompany.getId());
+        System.out.println(couponToAdd1);
+        Coupon couponToAdd2 = new Coupon(loggedCompany.getId());
+        System.out.println(couponToAdd2);
+        Coupon couponToAdd3 = new Coupon(loggedCompany.getId());
+        System.out.println(couponToAdd3);
+        Coupon couponToAdd4 = new Coupon(loggedCompany.getId());
+        System.out.println(couponToAdd4);
+        System.out.println();
+
+        try {
+            companyFacade.addCoupon(couponToAdd1);
+            companyFacade.addCoupon(couponToAdd2);
+            companyFacade.addCoupon(couponToAdd3);
+            companyFacade.addCoupon(couponToAdd4);
+            System.out.println("Coupons added!\nGet all companies coupons:");
+            companyFacade.getAllCompanyCoupons().forEach(System.out::println);
+        } catch (invalidCompanyException e) {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println("Get the logged company details:");
+        try {
+            System.out.println(companyFacade.getTheLoggedCompanyDetails());
+        } catch (invalidCompanyException e) {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println("--------------------------------- Update a company coupon ------------------------------");
+        try {
+            Coupon couponToUpdate = companyFacade.getTheLoggedCompanyDetails().getCoupons().get(1);
+            System.out.println("Trying to update coupon id 2: ");
+            System.out.println(couponToUpdate);
+            couponToUpdate.setAmount(23);
+            companyFacade.updateCoupon(couponToUpdate);
+            System.out.println(companyFacade.getTheLoggedCompanyDetails().getCoupons().get(1));
+        } catch (invalidCompanyException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
+
+
         System.out.println(ArtUtils.CUSTOMERS_FACADE);
 
         /**

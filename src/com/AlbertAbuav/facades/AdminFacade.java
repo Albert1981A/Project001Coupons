@@ -32,6 +32,10 @@ public class AdminFacade extends ClientFacade {
      */
     public void addCompany(Company company) throws invalidAdminException {
         List<Company> companyList = companiesDAO.getAllCompanies();
+        if (companyList.size() == 0) {
+            companiesDAO.addCompany(company);
+            return;
+        }
         for (Company c : companyList) {
             if (company.getName().equals(c.getName())) {
                 throw new invalidAdminException("The name of the company you are trying to add already appears in the system.\nCompanies with the same name cannot be added.");
@@ -75,7 +79,7 @@ public class AdminFacade extends ClientFacade {
      */
     public void deleteCompany(Company company) {
         companiesDAO.deleteCompany(company.getId());
-        //TODO - method deleteCompany
+        //TODO - method delete a Company
     }
 
     /**
@@ -105,6 +109,10 @@ public class AdminFacade extends ClientFacade {
      */
     public void addCustomer(Customer customer) throws invalidAdminException {
         List<Customer> customerList = customersDAO.getAllCustomers();
+        if (customerList.size() == 0) {
+            customersDAO.addCustomer(customer);
+            return;
+        }
         for (Customer customer1 : customerList) {
             if (customer.getEmail().equals(customer1.getEmail())) {
                 throw new invalidAdminException("The email of the customer you are trying to add already appears in the system.\nCustomers with the same email cannot be added.");
@@ -132,13 +140,13 @@ public class AdminFacade extends ClientFacade {
             for (Customer customer1 : customerList) {
                 if (customer.getId() == customer1.getId()) {
                     customersDAO.updateCustomer(customer);
+                    return;
                 }
             }
         } else if (customer.getId() != toCompare.getId()) {
             throw new invalidAdminException("The customer id cannot be updated");
-        } else {
-            customersDAO.updateCustomer(customer);
         }
+        customersDAO.updateCustomer(customer);
     }
 
     /**
@@ -148,7 +156,7 @@ public class AdminFacade extends ClientFacade {
      * @param customer Customer
      */
     public void deleteCustomer(Customer customer) {
-        //TODO - deleteCustomer
+        //TODO - delete a Customer
         customersDAO.deleteCustomer(customer.getId());
     }
 

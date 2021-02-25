@@ -4,14 +4,10 @@ import com.AlbertAbuav.beans.Company;
 import com.AlbertAbuav.dao.CompaniesDAO;
 import com.AlbertAbuav.dbdao.CompaniesDBDAO;
 
-import java.rmi.server.UID;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class FactoryUtils {
-
-    private static int COUNT = 1;
 
     /**
      * This method generate a random customer first name.
@@ -24,7 +20,7 @@ public class FactoryUtils {
 
     /**
      * This method generate a random customer last name.
-     * @return
+     * @return String
      */
     public static String generateLastName() {
         LastName lastName = LastName.values()[(int)(Math.random() * LastName.values().length)];
@@ -40,12 +36,11 @@ public class FactoryUtils {
      */
     public static String generateCompanyName() {
         String companyName = CompaniesType.values()[(int)(Math.random() * CompaniesType.values().length)].toString();
-        if (COUNT == 1) {
-            COUNT++;
-            return companyName;
-        }
         CompaniesDAO companiesDAO = new CompaniesDBDAO();
         List<Company> companyList = companiesDAO.getAllCompanies();
+        if (companyList.size() == 0) {
+            return companyName;
+        }
         boolean isExist = true;
         while (isExist) {
             for (Company company : companyList) {

@@ -1,6 +1,5 @@
 package com.AlbertAbuav.beans;
 
-import com.AlbertAbuav.utils.CompaniesType;
 import com.AlbertAbuav.utils.FactoryUtils;
 
 import java.util.ArrayList;
@@ -81,7 +80,7 @@ public class Company {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", coupons=" + coupons +
+                ", coupons='" + coupons +
                 '}';
     }
 
