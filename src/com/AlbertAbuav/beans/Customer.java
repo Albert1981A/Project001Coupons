@@ -1,6 +1,7 @@
 package com.AlbertAbuav.beans;
 
 import com.AlbertAbuav.utils.FactoryUtils;
+import com.AlbertAbuav.utils.PrintUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +94,7 @@ public class Customer {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", coupons=" + coupons +
+                ", coupons=" + PrintUtils.listToString(coupons) +
                 '}';
     }
 

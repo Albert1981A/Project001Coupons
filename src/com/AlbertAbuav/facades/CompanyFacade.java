@@ -192,5 +192,14 @@ public class CompanyFacade extends ClientFacade {
         return loggedCompany;
     }
 
+    /**
+     * The method return a single coupon of the logged company by id.
+     * @param id int
+     * @return Coupon
+     */
+    public Coupon getSingleCoupon(int id) {
+        return couponsDAO.getSingleCoupon(id);
+    }
+
 
 }

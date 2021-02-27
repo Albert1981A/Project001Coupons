@@ -10,8 +10,10 @@ import com.AlbertAbuav.db.DatabaseManager;
 import com.AlbertAbuav.dbdao.CategoriesDBDAO;
 import com.AlbertAbuav.exceptions.invalidAdminException;
 import com.AlbertAbuav.exceptions.invalidCompanyException;
+import com.AlbertAbuav.exceptions.invalidCustomerException;
 import com.AlbertAbuav.facades.AdminFacade;
 import com.AlbertAbuav.facades.CompanyFacade;
+import com.AlbertAbuav.facades.CustomerFacade;
 import com.AlbertAbuav.login.ClientType;
 import com.AlbertAbuav.login.LoginManager;
 import com.AlbertAbuav.utils.ArtUtils;
@@ -375,9 +377,39 @@ public class TestFacade {
         } catch (invalidCompanyException e) {
             System.out.println(e.getMessage());
         }
+        System.out.println();
 
 
+        /**
+         * Login to Customer Facade
+         */
         System.out.println(ArtUtils.CUSTOMERS_FACADE);
+        Customer loggedCustomer = adminFacade.getSingleCustomer(4);
+        CustomerFacade customerFacade = (CustomerFacade) loginManager.login(loggedCustomer.getEmail(), loggedCustomer.getPassword(), ClientType.CUSTOMER);
+        System.out.println("----------------------------- Checking Connection to Customer --------------------------");
+        System.out.println(customerFacade);
+        System.out.println();
+
+        System.out.println("------------------------- Adding new coupon to CustomersVsCoupons ----------------------");
+        System.out.println("Attempting to add coupons:");
+        Coupon couponToPurchase1 = companyFacade.getSingleCoupon(1);
+        System.out.println(couponToPurchase1);
+        Coupon couponToPurchase2 = companyFacade.getSingleCoupon(2);
+        System.out.println(couponToPurchase2);
+        Coupon couponToPurchase4 = companyFacade.getSingleCoupon(4);
+        System.out.println(couponToPurchase4);
+        System.out.println();
+
+        try {
+            customerFacade.addCoupon(couponToPurchase1);
+            customerFacade.addCoupon(couponToPurchase2);
+            customerFacade.addCoupon(couponToPurchase4);
+            System.out.println("The coupons were added:");
+            customerFacade.getAllCustomerCoupons().forEach(System.out::println);
+        } catch (invalidCustomerException e) {
+            System.out.println(e.getMessage());
+        }
+
 
         /**
          * closing all connections.
