@@ -3,6 +3,7 @@ package com.AlbertAbuav.facades;
 import com.AlbertAbuav.beans.Category;
 import com.AlbertAbuav.beans.Company;
 import com.AlbertAbuav.beans.Coupon;
+import com.AlbertAbuav.beans.CustomersVsCoupons;
 import com.AlbertAbuav.exceptions.invalidCompanyException;
 
 import java.util.ArrayList;
@@ -112,7 +113,13 @@ public class CompanyFacade extends ClientFacade {
      * @param coupon Coupon
      */
     public void deleteCoupon(Coupon coupon) {
-        //TODO - deleting Company coupons
+        List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCouponsByCouponId(coupon.getId());
+        for (CustomersVsCoupons purchase : purchases) {
+            if (purchase.getCouponID() == coupon.getId()) {
+                couponsDAO.deleteCouponPurchase(purchase.getCustomerID(), purchase.getCouponID());
+            }
+        }
+        couponsDAO.deleteCoupon(coupon.getId());
     }
 
     /**

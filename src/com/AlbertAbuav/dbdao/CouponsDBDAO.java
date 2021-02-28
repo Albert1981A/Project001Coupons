@@ -186,4 +186,9 @@ public class CouponsDBDAO implements CouponsDAO {
     public List<CustomersVsCoupons> getAllCustomersCoupons(int customerID) {
         return customersVsCouponsDAO.getAllCustomersCoupons(customerID);
     }
+
+    @Override
+    public List<CustomersVsCoupons> getAllCustomersCouponsByCouponId(int couponID) {
+        return customersVsCouponsDAO.getAllCustomersCouponsByCouponId(couponID);
+    }
 }

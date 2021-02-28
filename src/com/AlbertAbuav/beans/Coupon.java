@@ -25,7 +25,7 @@ public class Coupon {
         this.category = Category.values()[(int)(Math.random()*Category.values().length)];
         this.title = "Title: " + COUNT;
         this.description = "Description: " + COUNT;
-        this.startDate = DateUtils.javaDateFromLocalDate(LocalDate.now());
+        this.startDate = DateUtils.javaDateFromLocalDate(LocalDate.now().minusDays(3));
         this.endDate = DateUtils.javaDateFromLocalDate(LocalDate.now().plusDays(7));
         this.amount = (int)(Math.random()*21)+30;
         this.price = (int)(Math.random()*21)+80;
@@ -37,7 +37,7 @@ public class Coupon {
         this.category = Category.values()[(int)(Math.random()*Category.values().length)];
         this.title = "Title: " + COUNT;
         this.description = "Description: " + COUNT;
-        this.startDate = DateUtils.javaDateFromLocalDate(LocalDate.now());
+        this.startDate = DateUtils.javaDateFromLocalDate(LocalDate.now().minusDays(3));
         this.endDate = DateUtils.javaDateFromLocalDate(LocalDate.now().plusDays(7));
         this.amount = (int)(Math.random()*21)+30;
         this.price = (int)(Math.random()*41)+60;

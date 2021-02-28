@@ -12,4 +12,6 @@ public interface CustomersVsCouponsDAO {
 
     List<CustomersVsCoupons> getAllCustomersCoupons(int customerID);
 
+    List<CustomersVsCoupons> getAllCustomersCouponsByCouponId(int couponID);
+
 }

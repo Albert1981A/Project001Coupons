@@ -5,8 +5,10 @@ import com.AlbertAbuav.beans.Coupon;
 import com.AlbertAbuav.beans.Customer;
 import com.AlbertAbuav.beans.CustomersVsCoupons;
 import com.AlbertAbuav.exceptions.invalidCustomerException;
+import com.AlbertAbuav.utils.DateUtils;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,7 +53,7 @@ public class CustomerFacade extends ClientFacade {
         List<CustomersVsCoupons> allCustomerPurchase = customersVsCouponsDAO.getAllCustomersCoupons(customerID);
         if (coupon.getAmount() == 0) {
             throw new invalidCustomerException("The coupons of \"" + coupon.getTitle() + "\" are out of stock!");
-        } else if (coupon.getEndDate().before(new Date())) {
+        } else if (coupon.getEndDate().before(DateUtils.javaDateFromLocalDate(LocalDate.now()))) {
             throw new invalidCustomerException("The coupon \"" + coupon.getTitle() + "\" has expired!");
         }
         if (allCustomerPurchase.size() != 0) {
@@ -75,8 +77,8 @@ public class CustomerFacade extends ClientFacade {
     public List<Coupon> getAllCustomerCoupons() {
         List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCoupons(customerID);
         List<Coupon> couponList = new ArrayList<>();
-        for (CustomersVsCoupons Purchase : purchases) {
-            couponList.add(couponsDAO.getSingleCoupon(Purchase.getCouponID()));
+        for (CustomersVsCoupons purchase : purchases) {
+            couponList.add(couponsDAO.getSingleCoupon(purchase.getCouponID()));
         }
         return couponList;
     }
@@ -89,7 +91,14 @@ public class CustomerFacade extends ClientFacade {
      * @return List
      */
     public List<Coupon> getAllCustomerCouponsOfSpecificCategory(Category category) {
-        return null;
+        List<Coupon> couponList = getAllCustomerCoupons();
+        List<Coupon> categoryList = new ArrayList<>();
+        for (Coupon coupon: couponList) {
+            if (coupon.getCategory().equals(category)) {
+                categoryList.add(coupon);
+            }
+        }
+        return categoryList;
     }
 
     /**
@@ -100,17 +109,30 @@ public class CustomerFacade extends ClientFacade {
      * @return List
      */
     public List<Coupon> getAllCustomerCouponsUpToMaxPrice(double maxPrice) {
-        return null;
+        List<Coupon> couponList = getAllCustomerCoupons();
+        List<Coupon> categoryList = new ArrayList<>();
+        for (Coupon coupon: couponList) {
+            if (coupon.getPrice() <= maxPrice) {
+                categoryList.add(coupon);
+            }
+        }
+        return categoryList;
     }
 
     /**
      * Get customer details.
      * That means, the details of the customer who performed the login.
      *
-     * @param customerID int
      * @return List
      */
-    public Customer getSingleCustomer(int customerID) {
-        return null;
+    public Customer getTheLoggedCustomerDetails() {
+        Customer loggedCustomer = customersDAO.getSingleCustomer(customerID);
+        List<Coupon> customerCoupon = getAllCustomerCoupons();
+        if (customerCoupon.size() == 0) {
+            return loggedCustomer;
+        } else {
+            loggedCustomer.setCoupons(customerCoupon);
+        }
+        return loggedCustomer;
     }
 }
