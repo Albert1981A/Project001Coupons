@@ -20,10 +20,6 @@ public class CustomerFacade extends ClientFacade {
     public CustomerFacade() {
     }
 
-    public CustomerFacade(int customerID) {
-        this.customerID = customerID;
-    }
-
     /**
      * Login method, the method is implemented from the abstract class "ClientFacade"
      *
@@ -74,13 +70,20 @@ public class CustomerFacade extends ClientFacade {
      *
      * @return List
      */
-    public List<Coupon> getAllCustomerCoupons() {
+    public List<Coupon> getAllCustomerCoupons() throws invalidCustomerException {
         List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCoupons(customerID);
         List<Coupon> couponList = new ArrayList<>();
-        for (CustomersVsCoupons purchase : purchases) {
-            couponList.add(couponsDAO.getSingleCoupon(purchase.getCouponID()));
+        if (purchases.size() != 0) {
+            for (CustomersVsCoupons purchase : purchases) {
+                couponList.add(couponsDAO.getSingleCoupon(purchase.getCouponID()));
+            }
+            if (couponList.size() == 0) {
+                throw new invalidCustomerException("There are no coupons purchased by this customer!");
+            }
+            return couponList;
+        } else {
+            throw new invalidCustomerException("There are no coupons in the system!");
         }
-        return couponList;
     }
 
     /**
@@ -90,15 +93,22 @@ public class CustomerFacade extends ClientFacade {
      * @param category Category
      * @return List
      */
-    public List<Coupon> getAllCustomerCouponsOfSpecificCategory(Category category) {
+    public List<Coupon> getAllCustomerCouponsOfSpecificCategory(Category category) throws invalidCustomerException {
         List<Coupon> couponList = getAllCustomerCoupons();
         List<Coupon> categoryList = new ArrayList<>();
-        for (Coupon coupon: couponList) {
-            if (coupon.getCategory().equals(category)) {
-                categoryList.add(coupon);
+        if (couponList.size() != 0) {
+            for (Coupon coupon : couponList) {
+                if (coupon.getCategory().equals(category)) {
+                    categoryList.add(coupon);
+                }
             }
+            if (categoryList.size() == 0) {
+                throw new invalidCustomerException("There are no customer coupons of the specific category you entered!");
+            }
+            return categoryList;
+        } else {
+            throw new invalidCustomerException("There are no customer coupons!");
         }
-        return categoryList;
     }
 
     /**
@@ -108,15 +118,22 @@ public class CustomerFacade extends ClientFacade {
      * @param maxPrice double
      * @return List
      */
-    public List<Coupon> getAllCustomerCouponsUpToMaxPrice(double maxPrice) {
+    public List<Coupon> getAllCustomerCouponsUpToMaxPrice(double maxPrice) throws invalidCustomerException {
         List<Coupon> couponList = getAllCustomerCoupons();
         List<Coupon> categoryList = new ArrayList<>();
-        for (Coupon coupon: couponList) {
-            if (coupon.getPrice() <= maxPrice) {
-                categoryList.add(coupon);
+        if (couponList.size() != 0) {
+            for (Coupon coupon : couponList) {
+                if (coupon.getPrice() <= maxPrice) {
+                    categoryList.add(coupon);
+                }
             }
+            if (categoryList.size() == 0) {
+                throw new invalidCustomerException("There are no customer coupons of the specific category you entered!");
+            }
+            return categoryList;
+        } else {
+            throw new invalidCustomerException("There are no customer coupons!");
         }
-        return categoryList;
     }
 
     /**
@@ -125,7 +142,7 @@ public class CustomerFacade extends ClientFacade {
      *
      * @return List
      */
-    public Customer getTheLoggedCustomerDetails() {
+    public Customer getTheLoggedCustomerDetails() throws invalidCustomerException {
         Customer loggedCustomer = customersDAO.getSingleCustomer(customerID);
         List<Coupon> customerCoupon = getAllCustomerCoupons();
         if (customerCoupon.size() == 0) {
@@ -135,4 +152,6 @@ public class CustomerFacade extends ClientFacade {
         }
         return loggedCustomer;
     }
+
+
 }

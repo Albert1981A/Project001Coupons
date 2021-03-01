@@ -1,9 +1,14 @@
 package com.AlbertAbuav.facades;
 
 import com.AlbertAbuav.beans.Company;
+import com.AlbertAbuav.beans.Coupon;
 import com.AlbertAbuav.beans.Customer;
+import com.AlbertAbuav.beans.CustomersVsCoupons;
 import com.AlbertAbuav.exceptions.invalidAdminException;
+import com.AlbertAbuav.exceptions.invalidCompanyException;
+import com.AlbertAbuav.exceptions.invalidCustomerException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdminFacade extends ClientFacade {
@@ -59,7 +64,6 @@ public class AdminFacade extends ClientFacade {
         for (Company company1 : companyList) {
             if (company.getName().equals(company1.getName())) {
                 toCompare = company1;
-
             }
         }
         if (toCompare == null) {
@@ -77,9 +81,22 @@ public class AdminFacade extends ClientFacade {
      *
      * @param company Company
      */
-    public void deleteCompany(Company company) {
-        companiesDAO.deleteCompany(company.getId());
-        //TODO - method delete a Company
+    public void deleteCompany(Company company) throws invalidCustomerException {
+        if (companiesDAO.isCompanyExists(company.getEmail(), company.getPassword())) {
+            List<Coupon> companyCoupons = company.getCoupons();
+            if (companyCoupons.size() != 0) {
+                for (Coupon coupon : companyCoupons) {
+                    List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCouponsByCouponId(coupon.getId());
+                    for (CustomersVsCoupons purchase : purchases) {
+                        customersVsCouponsDAO.deleteCustomersVsCoupons(purchase.getCustomerID(), purchase.getCouponID());
+                    }
+                    couponsDAO.deleteCoupon(coupon.getId());
+                }
+            }
+            companiesDAO.deleteCompany(company.getId());
+        } else {
+            throw new invalidCustomerException("There is no company by the name \"" + company.getName() + "\" in the system!");
+        }
     }
 
     /**
@@ -87,8 +104,12 @@ public class AdminFacade extends ClientFacade {
      *
      * @return List
      */
-    public List<Company> getAllCompanies() {
-        return companiesDAO.getAllCompanies();
+    public List<Company> getAllCompanies() throws invalidAdminException {
+        List<Company> companies = companiesDAO.getAllCompanies();
+        if (companies.size() == 0) {
+            throw new invalidAdminException("There are no companies in the system");
+        }
+        return companies;
     }
 
     /**
@@ -98,7 +119,19 @@ public class AdminFacade extends ClientFacade {
      * @return Company
      */
     public Company getSingleCompany(int id) {
-        return companiesDAO.getSingleCompany(id);
+        Company company = companiesDAO.getSingleCompany(id);
+        List<Coupon> dbCoupons = couponsDAO.getAllCoupons();
+        List<Coupon> companyCoupons = new ArrayList<>();
+        if (dbCoupons.size() != 0) {
+            for (Coupon dbCoupon : dbCoupons) {
+                if (dbCoupon.getCompanyID() == id) {
+                    companyCoupons.add(dbCoupon);
+                }
+            }
+            company.setCoupons(companyCoupons);
+            return company;
+        }
+        return company;
     }
 
     /**
@@ -155,9 +188,18 @@ public class AdminFacade extends ClientFacade {
      *
      * @param customer Customer
      */
-    public void deleteCustomer(Customer customer) {
-        //TODO - delete a Customer
-        customersDAO.deleteCustomer(customer.getId());
+    public void deleteCustomer(Customer customer) throws invalidCustomerException {
+        if (customersDAO.isCustomerExists(customer.getEmail(), customer.getPassword())) {
+            List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCoupons(customer.getId());
+            if (purchases.size() != 0) {
+                for (CustomersVsCoupons purchase : purchases) {
+                    customersVsCouponsDAO.deleteCustomersVsCoupons(purchase.getCustomerID(), purchase.getCouponID());
+                }
+            }
+            customersDAO.deleteCustomer(customer.getId());
+        } else {
+            throw new invalidCustomerException("There is no customer by the name \"" + customer.getFirstName() + " " + customer.getLastName() + "\" in the system!");
+        }
     }
 
     /**
@@ -165,8 +207,12 @@ public class AdminFacade extends ClientFacade {
      *
      * @return List
      */
-    public List<Customer> getAllCustomers() {
-        return customersDAO.getAllCustomers();
+    public List<Customer> getAllCustomers() throws invalidAdminException {
+        List<Customer> customers = customersDAO.getAllCustomers();
+        if (customers.size() == 0) {
+            throw new invalidAdminException("There are no customers in the system");
+        }
+        return customers;
     }
 
     /**
@@ -176,7 +222,26 @@ public class AdminFacade extends ClientFacade {
      * @return Customer
      */
     public Customer getSingleCustomer(int id) {
-        return customersDAO.getSingleCustomer(id);
+        Customer customer = customersDAO.getSingleCustomer(id);
+        List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCoupons(id);
+        List<Coupon> customerCoupon = new ArrayList<>();
+        for (CustomersVsCoupons purchase : purchases) {
+            customerCoupon.add(couponsDAO.getSingleCoupon(purchase.getCouponID()));
+        }
+        if (customerCoupon.size() == 0) {
+            return customer;
+        } else {
+            customer.setCoupons(customerCoupon);
+        }
+        return customer;
+    }
+
+    public List<CustomersVsCoupons> getAllCustomersVsCoupons(int customerID) throws invalidAdminException {
+        List<CustomersVsCoupons> purchase = customersVsCouponsDAO.getAllCustomersCoupons(customerID);
+        if (purchase.size() == 0) {
+            throw new invalidAdminException("There are no customer purchases!");
+        }
+        return purchase;
     }
 
 }

@@ -5,6 +5,8 @@ import com.AlbertAbuav.utils.ArtUtils;
 public class TestArt {
     public static void main(String[] args) {
 
+        //Slant
+
         System.out.println(ArtUtils.COUPON_SYSTEM);
         System.out.println();
 
@@ -30,6 +32,9 @@ public class TestArt {
         System.out.println();
 
         System.out.println(ArtUtils.CUSTOMERS_FACADE);
+        System.out.println();
+
+        System.out.println(ArtUtils.DELETING_METHODS);
         System.out.println();
     }
 }

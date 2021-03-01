@@ -1,6 +1,7 @@
 package com.AlbertAbuav.dao;
 
 import com.AlbertAbuav.beans.Company;
+import com.AlbertAbuav.beans.Coupon;
 
 import java.util.List;
 
