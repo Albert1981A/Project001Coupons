@@ -83,30 +83,29 @@ public class TestFacade {
         System.out.println("---------------------------------- Adding new companies --------------------------------");
 
         try {
-            Company c1 = new Company();
-            adminFacade.addCompany(c1);
-            Company c2 = new Company();
-            adminFacade.addCompany(c2);
-            Company c3 = new Company();
-            adminFacade.addCompany(c3);
-            Company c4 = new Company();
-            adminFacade.addCompany(c4);
-            Company c5 = new Company();
-            adminFacade.addCompany(c5);
-            Company c6 = new Company();
-            adminFacade.addCompany(c6);
-            Company c7 = new Company();
-            adminFacade.addCompany(c7);
-            Company c8 = new Company();
-            adminFacade.addCompany(c8);
-            Company c9 = new Company();
-            adminFacade.addCompany(c9);
-            Company c10 = new Company();
-            adminFacade.addCompany(c10);
-        } catch (invalidAdminException e) {
-            System.out.println(e.getMessage());
-        }
-        try {
+            for (int i = 0; i < 10; i++) {
+                adminFacade.addCompany(new Company());
+            }
+//            Company c1 = new Company();
+//            adminFacade.addCompany(c1);
+//            Company c2 = new Company();
+//            adminFacade.addCompany(c2);
+//            Company c3 = new Company();
+//            adminFacade.addCompany(c3);
+//            Company c4 = new Company();
+//            adminFacade.addCompany(c4);
+//            Company c5 = new Company();
+//            adminFacade.addCompany(c5);
+//            Company c6 = new Company();
+//            adminFacade.addCompany(c6);
+//            Company c7 = new Company();
+//            adminFacade.addCompany(c7);
+//            Company c8 = new Company();
+//            adminFacade.addCompany(c8);
+//            Company c9 = new Company();
+//            adminFacade.addCompany(c9);
+//            Company c10 = new Company();
+//            adminFacade.addCompany(c10);
             adminFacade.getAllCompanies().forEach(System.out::println);
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
@@ -114,9 +113,10 @@ public class TestFacade {
         System.out.println();
 
         System.out.println("--------------------- Attempt to add a company with an existing name -------------------");
-        Company temp = adminFacade.getSingleCompany(1);
-        Company companyToAdd1 = new Company(temp.getName(), "email@email.com", "11111");
+        Company temp =null;
         try {
+            temp = adminFacade.getSingleCompany(1);
+            Company companyToAdd1 = new Company(temp.getName(), "email@email.com", "11111");
             adminFacade.addCompany(companyToAdd1);
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
@@ -124,8 +124,9 @@ public class TestFacade {
         System.out.println();
 
         System.out.println("--------------------- Attempt to add a company with an existing email ------------------");
-        Company companyToAdd2 = new Company("name", temp.getEmail(), "22222");
+
         try {
+            Company companyToAdd2 = new Company("name", temp.getEmail(), "22222");
             adminFacade.addCompany(companyToAdd2);
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
@@ -133,23 +134,25 @@ public class TestFacade {
         System.out.println();
 
         System.out.println("------------------------------------- Update a Company ---------------------------------");
-        Company companyToUpdate = adminFacade.getSingleCompany(2);
-        System.out.println("Updating Company: \n" + companyToUpdate);
-        companyToUpdate.setEmail("email.email.com");
+
         try {
+            Company companyToUpdate = adminFacade.getSingleCompany(2);
+            System.out.println("Updating Company: \n" + companyToUpdate);
+            companyToUpdate.setEmail("email.email.com");
             adminFacade.updateCompany(companyToUpdate);
+            System.out.println("Company: " + companyToUpdate.getName() + " - Email Updated");
+            System.out.println(adminFacade.getSingleCompany(2));
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
         }
-        System.out.println("Company: " + companyToUpdate.getName() + " - Email Updated");
-        System.out.println(adminFacade.getSingleCompany(2));
         System.out.println();
 
         System.out.println("----------------------------- Attempt to update a Company's id -------------------------");
-        Company companyToUpdate2 = adminFacade.getSingleCompany(3);
-        System.out.println("Updating Company: \n" + companyToUpdate2);
-        companyToUpdate2.setId(2);
+
         try {
+            Company companyToUpdate2 = adminFacade.getSingleCompany(3);
+            System.out.println("Updating Company: \n" + companyToUpdate2);
+            companyToUpdate2.setId(2);
             adminFacade.updateCompany(companyToUpdate2);
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
@@ -157,10 +160,11 @@ public class TestFacade {
         System.out.println();
 
         System.out.println("----------------------------- Attempt to update a Company's Name -------------------------");
-        Company companyToUpdate3 = adminFacade.getSingleCompany(4);
-        System.out.println("Updating Company: \n" + companyToUpdate3);
-        companyToUpdate3.setName(adminFacade.getSingleCompany(5).getName());
+
         try {
+            Company companyToUpdate3 = adminFacade.getSingleCompany(4);
+            System.out.println("Updating Company: \n" + companyToUpdate3);
+            companyToUpdate3.setName(adminFacade.getSingleCompany(5).getName());
             adminFacade.updateCompany(companyToUpdate3);
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
@@ -168,10 +172,11 @@ public class TestFacade {
         System.out.println();
 
         System.out.println("--------- Attempt to update a company whose name does not exist in the system ----------");
-        Company companyToUpdate4 = adminFacade.getSingleCompany(5);
-        System.out.println("Updating Company: \n" + companyToUpdate4);
-        companyToUpdate4.setName("Looly");
+
         try {
+            Company companyToUpdate4 = adminFacade.getSingleCompany(5);
+            companyToUpdate4.setName("Looly");
+            System.out.println("Updating Company: \n" + companyToUpdate4);
             adminFacade.updateCompany(companyToUpdate4);
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
@@ -180,30 +185,9 @@ public class TestFacade {
 
         System.out.println("------------------------------------ Adding Customers ----------------------------------");
         try {
-            Customer cu1 = new Customer();
-            adminFacade.addCustomer(cu1);
-            Customer cu2 = new Customer();
-            adminFacade.addCustomer(cu2);
-            Customer cu3 = new Customer();
-            adminFacade.addCustomer(cu3);
-            Customer cu4 = new Customer();
-            adminFacade.addCustomer(cu4);
-            Customer cu5 = new Customer();
-            adminFacade.addCustomer(cu5);
-            Customer cu6 = new Customer();
-            adminFacade.addCustomer(cu6);
-            Customer cu7 = new Customer();
-            adminFacade.addCustomer(cu7);
-            Customer cu8 = new Customer();
-            adminFacade.addCustomer(cu8);
-            Customer cu9 = new Customer();
-            adminFacade.addCustomer(cu9);
-            Customer cu10 = new Customer();
-            adminFacade.addCustomer(cu10);
-        } catch (invalidAdminException e) {
-            System.out.println(e.getMessage());
-        }
-        try {
+            for (int i = 0; i < 10; i++) {
+                adminFacade.addCustomer(new Customer());
+            }
             adminFacade.getAllCustomers().forEach(System.out::println);
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
@@ -211,8 +195,8 @@ public class TestFacade {
         System.out.println();
 
         System.out.println("--------------------- Attempt to add a customer with an existing email -----------------");
-        Customer temp1 = new Customer("firstName", "lastName", adminFacade.getSingleCustomer(1).getEmail(), "11111");
         try {
+            Customer temp1 = new Customer("firstName", "lastName", adminFacade.getSingleCustomer(1).getEmail(), "11111");
             adminFacade.addCustomer(temp1);
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
@@ -220,37 +204,40 @@ public class TestFacade {
         System.out.println();
 
         System.out.println("-------------------------------------- Update customer ---------------------------------");
-        Customer toUpdate = adminFacade.getSingleCustomer(1);
-        System.out.println("Update First name of customer: \n" + toUpdate);
-        toUpdate.setFirstName("Laura");
+        Customer toUpdate = null;
         try {
+            toUpdate = adminFacade.getSingleCustomer(1);
+            System.out.println("Update First name of customer: \n" + toUpdate);
+            toUpdate.setFirstName("Laura");
             adminFacade.updateCustomer(toUpdate);
+            System.out.println(adminFacade.getSingleCustomer(1));
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
         }
-        System.out.println(adminFacade.getSingleCustomer(1));
         System.out.println();
 
         System.out.println("------------------------- Attempt to update a customer email and id --------------------");
-        Customer toUpdate1 = adminFacade.getSingleCustomer(2);
-        System.out.println("Update email of customer: \n" + toUpdate1);
-        toUpdate1.setEmail("email@email.com");
-        toUpdate1.setId(3);
-        System.out.println(toUpdate1);
+
         try {
+            Customer toUpdate1 = adminFacade.getSingleCustomer(2);
+            System.out.println("Update email of customer: \n" + toUpdate1);
+            toUpdate1.setEmail("email@email.com");
+            toUpdate1.setId(3);
+            System.out.println(toUpdate1);
             adminFacade.updateCustomer(toUpdate1);
+            System.out.println(adminFacade.getSingleCustomer(3));
+            System.out.println("The system will choose to change the object according to its - id!");
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
         }
-        System.out.println(adminFacade.getSingleCustomer(3));
-        System.out.println("The system will choose to change the object according to its - id!");
         System.out.println();
 
         System.out.println("------------------------------ Attempt to update a customer id -------------------------");
-        Customer toUpdate2 = adminFacade.getSingleCustomer(4);
-        System.out.println("Update id of customer: \n" + toUpdate2);
-        toUpdate2.setId(2);
+
         try {
+            Customer toUpdate2 = adminFacade.getSingleCustomer(4);
+            System.out.println("Update id of customer: \n" + toUpdate2);
+            toUpdate2.setId(2);
             adminFacade.updateCustomer(toUpdate2);
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
@@ -258,91 +245,61 @@ public class TestFacade {
         System.out.println();
 
 
-
         /**
          * Login to Company Facade
          */
         System.out.println(ArtUtils.COMPANIES_FACADE);
 
-        Company loggedCompany = adminFacade.getSingleCompany(4);
-        CompanyFacade companyFacade = (CompanyFacade)loginManager.login(loggedCompany.getEmail(), loggedCompany.getPassword(), ClientType.COMPANY);
-        Company loggedCompany2 = adminFacade.getSingleCompany(2);
+        Company loggedCompany1 = null;
+        Company loggedCompany2 = null;
+        Company loggedCompany3 = null;
+        try {
+            loggedCompany1 = adminFacade.getSingleCompany(4);
+            loggedCompany2 = adminFacade.getSingleCompany(2);
+            loggedCompany3 = adminFacade.getSingleCompany(3);
+        } catch (invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
+        CompanyFacade companyFacade1 = (CompanyFacade)loginManager.login(loggedCompany1.getEmail(), loggedCompany1.getPassword(), ClientType.COMPANY);
         CompanyFacade companyFacade2 = (CompanyFacade)loginManager.login(loggedCompany2.getEmail(), loggedCompany2.getPassword(), ClientType.COMPANY);
-        Company loggedCompany3 = adminFacade.getSingleCompany(3);
         CompanyFacade companyFacade3 = (CompanyFacade)loginManager.login(loggedCompany3.getEmail(), loggedCompany3.getPassword(), ClientType.COMPANY);
+
         System.out.println("----------------------------- Checking Connection to Company ---------------------------");
-        System.out.println(companyFacade);
+
+        System.out.println(companyFacade1);
         System.out.println(companyFacade2);
         System.out.println(companyFacade3);
         System.out.println();
 
-        System.out.println("---------------------------- Adding new coupon to the company --------------------------");
-        System.out.println("Trying to get all companies coupons when their is no coupons in the system:");
+        System.out.println("------ Trying to get all companies coupons when their is no coupons in the system ------");
         try {
-            companyFacade.getAllCompanyCoupons().forEach(System.out::println);
+            companyFacade1.getAllCompanyCoupons().forEach(System.out::println);
         } catch (invalidCompanyException e) {
             System.out.println(e.getMessage());
         }
+        System.out.println();
+
+        System.out.println("---------------------------- Adding new coupon to the company --------------------------");
         System.out.println();
 
         System.out.println("Trying to add coupons: ");
-        System.out.println("--------------------------------------");
-        Coupon couponToAdd1 = new Coupon(loggedCompany.getId());
-        System.out.println(couponToAdd1);
-        Coupon couponToAdd2 = new Coupon(loggedCompany.getId());
-        System.out.println(couponToAdd2);
-        Coupon couponToAdd3 = new Coupon(loggedCompany.getId());
-        System.out.println(couponToAdd3);
-        Coupon couponToAdd4 = new Coupon(loggedCompany.getId());
-        System.out.println(couponToAdd4);
-        Coupon couponToAdd5 = new Coupon(loggedCompany.getId());
-        System.out.println(couponToAdd5);
-        Coupon couponToAdd6 = new Coupon(loggedCompany.getId());
-        System.out.println(couponToAdd6);
-        Coupon couponToAdd7 = new Coupon(loggedCompany.getId());
-        System.out.println(couponToAdd7);
-        System.out.println();
-
+        System.out.println("----------------------");
         try {
-            companyFacade.addCoupon(couponToAdd1);
-            companyFacade.addCoupon(couponToAdd2);
-            companyFacade.addCoupon(couponToAdd3);
-            companyFacade.addCoupon(couponToAdd4);
-            companyFacade.addCoupon(couponToAdd5);
-            companyFacade.addCoupon(couponToAdd6);
-            companyFacade.addCoupon(couponToAdd7);
-            System.out.println("Coupons added!\nGet the logged company details:");
-            System.out.println(companyFacade.getTheLoggedCompanyDetails());
-        } catch (invalidCompanyException e) {
-            System.out.println(e.getMessage());
-        }
-
-        System.out.println("adding coupons of other companies :");
-        System.out.println("--------------------------------------");
-
-        System.out.println("Creating new coupons:");
-        Coupon couponToAdd8 = new Coupon(loggedCompany2.getId());
-        System.out.println(couponToAdd8);
-        Coupon couponToAdd9 = new Coupon(loggedCompany2.getId());
-        System.out.println(couponToAdd9);
-        Coupon couponToAdd10 = new Coupon(loggedCompany2.getId());
-        System.out.println(couponToAdd10);
-        Coupon couponToAdd11 = new Coupon(loggedCompany3.getId());
-        System.out.println(couponToAdd11);
-        Coupon couponToAdd12 = new Coupon(loggedCompany3.getId());
-        System.out.println(couponToAdd12);
-        Coupon couponToAdd13 = new Coupon(loggedCompany3.getId());
-        System.out.println(couponToAdd13);
-
-        try {
-            companyFacade2.addCoupon(couponToAdd8);
-            companyFacade2.addCoupon(couponToAdd9);
-            companyFacade2.addCoupon(couponToAdd10);
+            for (int i = 0; i < 7; i++) {
+                companyFacade1.addCoupon(new Coupon(loggedCompany1.getId()));
+            }
+            for (int i = 0; i < 3; i++) {
+                companyFacade2.addCoupon(new Coupon(loggedCompany2.getId()));
+            }
+            for (int i = 0; i < 3; i++) {
+                companyFacade3.addCoupon(new Coupon(loggedCompany3.getId()));
+            }
+            System.out.println("The coupons have been added to company id-4:");
+            System.out.println(companyFacade1.getTheLoggedCompanyDetails());
+            System.out.println();
             System.out.println("The coupons have been added to company id-2:");
             System.out.println(companyFacade2.getTheLoggedCompanyDetails());
-            companyFacade3.addCoupon(couponToAdd11);
-            companyFacade3.addCoupon(couponToAdd12);
-            companyFacade3.addCoupon(couponToAdd13);
+            System.out.println();
             System.out.println("The coupons have been added to company id-3:");
             System.out.println(companyFacade3.getTheLoggedCompanyDetails());
         } catch (invalidCompanyException e) {
@@ -352,12 +309,12 @@ public class TestFacade {
 
         System.out.println("--------------------------------- Update a company coupon ------------------------------");
         try {
-            Coupon couponToUpdate = companyFacade.getTheLoggedCompanyDetails().getCoupons().get(1);
-            System.out.println("Trying to update the \"amount\" of coupon id 2: ");
+            Coupon couponToUpdate = companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(1);
+            System.out.println("Trying to update the \"amount\" of coupon id-2 to be \"23\": ");
             System.out.println(couponToUpdate);
             couponToUpdate.setAmount(23);
-            companyFacade.updateCoupon(couponToUpdate);
-            System.out.println(companyFacade.getTheLoggedCompanyDetails().getCoupons().get(1));
+            companyFacade1.updateCoupon(couponToUpdate);
+            System.out.println(companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(1));
         } catch (invalidCompanyException e) {
             System.out.println(e.getMessage());
         }
@@ -365,12 +322,12 @@ public class TestFacade {
 
         System.out.println("------------------------ Attempt to Update a company coupons title ---------------------");
         try {
-            Coupon couponToUpdate2 = companyFacade.getTheLoggedCompanyDetails().getCoupons().get(2);
+            Coupon couponToUpdate2 = companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(2);
             System.out.println("Trying to update the \"title\" of coupon id 3: ");
             System.out.println(couponToUpdate2);
             couponToUpdate2.setTitle("The new Title!");
-            companyFacade.updateCoupon(couponToUpdate2);
-            System.out.println(companyFacade.getTheLoggedCompanyDetails().getCoupons().get(2));
+            companyFacade1.updateCoupon(couponToUpdate2);
+            System.out.println(companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(2));
         } catch (invalidCompanyException e) {
             System.out.println(e.getMessage());
         }
@@ -378,12 +335,12 @@ public class TestFacade {
 
         System.out.println("-------------------------- Attempt to Update a company coupons id ----------------------");
         try {
-            Coupon couponToUpdate3 = companyFacade.getTheLoggedCompanyDetails().getCoupons().get(0);
+            Coupon couponToUpdate3 = companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(0);
             System.out.println("Trying to update the \"id\" of coupon id 1: ");
             System.out.println(couponToUpdate3);
             couponToUpdate3.setId(7);
-            companyFacade.updateCoupon(couponToUpdate3);
-            System.out.println(companyFacade.getTheLoggedCompanyDetails().getCoupons().get(0));
+            companyFacade1.updateCoupon(couponToUpdate3);
+            System.out.println(companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(0));
         } catch (invalidCompanyException e) {
             System.out.println(e.getMessage());
         }
@@ -391,12 +348,12 @@ public class TestFacade {
 
         System.out.println("-------------------------- Attempt to Update a coupons company id ----------------------");
         try {
-            Coupon couponToUpdate4 = companyFacade.getTheLoggedCompanyDetails().getCoupons().get(0);
+            Coupon couponToUpdate4 = companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(0);
             System.out.println("Trying to update the \"company id\" of coupon id 1: ");
             System.out.println(couponToUpdate4);
             couponToUpdate4.setCompanyID(7);
-            companyFacade.updateCoupon(couponToUpdate4);
-            System.out.println(companyFacade.getTheLoggedCompanyDetails().getCoupons().get(0));
+            companyFacade1.updateCoupon(couponToUpdate4);
+            System.out.println(companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(0));
         } catch (invalidCompanyException e) {
             System.out.println(e.getMessage());
         }
@@ -404,13 +361,13 @@ public class TestFacade {
 
         System.out.println("------------------------- Attempt to Update a coupon id and Title ----------------------");
         try {
-            Coupon couponToUpdate5 = companyFacade.getTheLoggedCompanyDetails().getCoupons().get(0);
+            Coupon couponToUpdate5 = companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(0);
             System.out.println("Trying to update the \"id\" of coupon id 1: ");
             System.out.println(couponToUpdate5);
             couponToUpdate5.setId(3);
             couponToUpdate5.setTitle("The new Title2");
-            companyFacade.updateCoupon(couponToUpdate5);
-            System.out.println(companyFacade.getTheLoggedCompanyDetails().getCoupons().get(2));
+            companyFacade1.updateCoupon(couponToUpdate5);
+            System.out.println(companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(2));
         } catch (invalidCompanyException e) {
             System.out.println(e.getMessage());
         }
@@ -419,8 +376,8 @@ public class TestFacade {
 
         System.out.println("---------------- Get all coupons from a specific category of the company ---------------");
         try {
-            Category categoryToCheck = companyFacade.getTheLoggedCompanyDetails().getCoupons().get(1).getCategory();
-            companyFacade.getAllCompanyCouponsOfSpecificCategory(categoryToCheck).forEach(System.out::println);
+            Category categoryToCheck = companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(1).getCategory();
+            companyFacade1.getAllCompanyCouponsOfSpecificCategory(categoryToCheck).forEach(System.out::println);
         } catch (invalidCompanyException e) {
             System.out.println(e.getMessage());
         }
@@ -428,7 +385,7 @@ public class TestFacade {
 
         System.out.println("-------------- Get all coupons up to the maximum price set by the company --------------");
         try {
-            companyFacade.getAllCompanyCouponsUpToMaxPrice(75).forEach(System.out::println);
+            companyFacade1.getAllCompanyCouponsUpToMaxPrice(75).forEach(System.out::println);
         } catch (invalidCompanyException e) {
             System.out.println(e.getMessage());
         }
@@ -439,80 +396,76 @@ public class TestFacade {
          * Login to Customer Facade
          */
         System.out.println(ArtUtils.CUSTOMERS_FACADE);
-        Customer loggedCustomer = adminFacade.getSingleCustomer(4);
-        CustomerFacade customerFacade = (CustomerFacade) loginManager.login(loggedCustomer.getEmail(), loggedCustomer.getPassword(), ClientType.CUSTOMER);
-        Customer loggedCustomer2 = adminFacade.getSingleCustomer(6);
+        Customer loggedCustomer1 = null;
+        Customer loggedCustomer2 = null;
+        Customer loggedCustomer3 = null;
+        try {
+            loggedCustomer1 = adminFacade.getSingleCustomer(4);
+            loggedCustomer2 = adminFacade.getSingleCustomer(6);
+            loggedCustomer3 = adminFacade.getSingleCustomer(7);
+        } catch (invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
+        CustomerFacade customerFacade1 = (CustomerFacade) loginManager.login(loggedCustomer1.getEmail(), loggedCustomer1.getPassword(), ClientType.CUSTOMER);
         CustomerFacade customerFacade2 = (CustomerFacade) loginManager.login(loggedCustomer2.getEmail(), loggedCustomer2.getPassword(), ClientType.CUSTOMER);
-        Customer loggedCustomer3 = adminFacade.getSingleCustomer(7);
         CustomerFacade customerFacade3 = (CustomerFacade) loginManager.login(loggedCustomer3.getEmail(), loggedCustomer3.getPassword(), ClientType.CUSTOMER);
         System.out.println("----------------------------- Checking Connection to Customer --------------------------");
-        System.out.println(customerFacade);
+        System.out.println(customerFacade1);
         System.out.println(customerFacade2);
         System.out.println(customerFacade3);
         System.out.println();
 
         System.out.println("------------------------- Adding new coupon to CustomersVsCoupons ----------------------");
         System.out.println("Attempting to add coupons:");
-        Coupon couponToPurchase1 = null;
-        Coupon couponToPurchase2 = null;
+        System.out.println();
+
         try {
-            couponToPurchase1 = companyFacade.getSingleCoupon(1);
-            System.out.println(couponToPurchase1);
-            couponToPurchase2 = companyFacade.getSingleCoupon(2);
-            System.out.println(couponToPurchase2);
-            Coupon couponToPurchase4 = companyFacade.getSingleCoupon(4);
-            System.out.println(couponToPurchase4);
-            Coupon couponToPurchase5 = companyFacade2.getSingleCoupon(8);
-            System.out.println(couponToPurchase5);
-            Coupon couponToPurchase6 = companyFacade2.getSingleCoupon(9);
-            System.out.println(couponToPurchase6);
-            Coupon couponToPurchase7 = companyFacade2.getSingleCoupon(10);
-            System.out.println(couponToPurchase7);
-            Coupon couponToPurchase8 = companyFacade3.getSingleCoupon(11);
-            System.out.println(couponToPurchase8);
-            Coupon couponToPurchase9 = companyFacade3.getSingleCoupon(12);
-            System.out.println(couponToPurchase9);
-            Coupon couponToPurchase10 = companyFacade3.getSingleCoupon(13);
-            System.out.println(couponToPurchase10);
-            customerFacade.addCoupon(couponToPurchase1);
-            customerFacade.addCoupon(couponToPurchase2);
-            customerFacade.addCoupon(couponToPurchase4);
-            customerFacade.addCoupon(couponToPurchase6);
-            customerFacade.addCoupon(couponToPurchase9);
-            System.out.println("The coupons were added to customer \"" + customerFacade.getTheLoggedCustomerDetails().getFirstName() + " " + customerFacade.getTheLoggedCustomerDetails().getLastName() + " \":");
-            System.out.println(customerFacade.getTheLoggedCustomerDetails());
-            customerFacade2.addCoupon(couponToPurchase2);
-            customerFacade2.addCoupon(couponToPurchase6);
-            customerFacade2.addCoupon(couponToPurchase7);
-            customerFacade2.addCoupon(couponToPurchase9);
-            customerFacade2.addCoupon(couponToPurchase10);
-            System.out.println("The coupons were added to customer \"" + customerFacade2.getTheLoggedCustomerDetails().getFirstName() + " " + customerFacade.getTheLoggedCustomerDetails().getLastName() + " \":");
+            customerFacade1.addCoupon(companyFacade1.getSingleCoupon(1));
+            customerFacade1.addCoupon(companyFacade1.getSingleCoupon(2));
+            customerFacade1.addCoupon(companyFacade1.getSingleCoupon(4));
+            customerFacade1.addCoupon(companyFacade2.getSingleCoupon(9));
+            customerFacade1.addCoupon(companyFacade3.getSingleCoupon(12));
+            System.out.println("Coupons were added to customer \"" + customerFacade1.getTheLoggedCustomerDetails().getFirstName() + " " + customerFacade1.getTheLoggedCustomerDetails().getLastName() + "\":");
+            System.out.println(customerFacade1.getTheLoggedCustomerDetails());
+            System.out.println();
+            customerFacade2.addCoupon(companyFacade1.getSingleCoupon(2));
+            customerFacade2.addCoupon(companyFacade2.getSingleCoupon(9));
+            customerFacade2.addCoupon(companyFacade2.getSingleCoupon(10));
+            customerFacade2.addCoupon(companyFacade3.getSingleCoupon(12));
+            customerFacade2.addCoupon(companyFacade3.getSingleCoupon(13));
+            System.out.println("Coupons were added to customer \"" + customerFacade2.getTheLoggedCustomerDetails().getFirstName() + " " + customerFacade1.getTheLoggedCustomerDetails().getLastName() + "\":");
             System.out.println(customerFacade2.getTheLoggedCustomerDetails());
-            customerFacade3.addCoupon(couponToPurchase1);
-            customerFacade3.addCoupon(couponToPurchase2);
-            customerFacade3.addCoupon(couponToPurchase4);
-            customerFacade3.addCoupon(couponToPurchase5);
-            customerFacade3.addCoupon(couponToPurchase7);
-            customerFacade3.addCoupon(couponToPurchase8);
-            customerFacade3.addCoupon(couponToPurchase9);
-            System.out.println("The coupons were added to customer \"" + customerFacade3.getTheLoggedCustomerDetails().getFirstName() + " " + customerFacade.getTheLoggedCustomerDetails().getLastName() + " \":");
+            System.out.println();
+            customerFacade3.addCoupon(companyFacade1.getSingleCoupon(1));
+            customerFacade3.addCoupon(companyFacade1.getSingleCoupon(2));
+            customerFacade3.addCoupon(companyFacade1.getSingleCoupon(4));
+            customerFacade3.addCoupon(companyFacade2.getSingleCoupon(8));
+            customerFacade3.addCoupon(companyFacade2.getSingleCoupon(10));
+            customerFacade3.addCoupon(companyFacade3.getSingleCoupon(11));
+            customerFacade3.addCoupon(companyFacade3.getSingleCoupon(12));
+            System.out.println("Coupons were added to customer \"" + customerFacade3.getTheLoggedCustomerDetails().getFirstName() + " " + customerFacade1.getTheLoggedCustomerDetails().getLastName() + "\":");
             System.out.println(customerFacade3.getTheLoggedCustomerDetails());
         } catch (invalidCompanyException | invalidCustomerException e) {
             System.out.println(e.getMessage());
         }
-
         System.out.println();
 
-
         System.out.println("---------- Attempt to add a coupon that is out of stock to CustomersVsCoupons ----------");
-        System.out.println("Attempting to add coupons:");
+        System.out.println("Attempting to add coupon:");
+        try {
+            Coupon couponToPurchase11 = companyFacade1.getSingleCoupon(5);
+            couponToPurchase11.setAmount(0);
+            System.out.println(couponToPurchase11);
+            customerFacade1.addCoupon(couponToPurchase11);
+        } catch (invalidCompanyException | invalidCustomerException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
 
         try {
-            Coupon couponToPurchase11 = companyFacade.getSingleCoupon(5);
-            customerFacade.addCoupon(couponToPurchase11);
-            System.out.println("The coupon was added:");
-            customerFacade.getAllCustomerCoupons().forEach(System.out::println);
-        } catch (invalidCompanyException | invalidCustomerException e) {
+            System.out.println("Get all customer coupons:");
+            customerFacade1.getAllCustomerCoupons().forEach(System.out::println);
+        } catch (invalidCustomerException e) {
             System.out.println(e.getMessage());
         }
         System.out.println();
@@ -520,14 +473,14 @@ public class TestFacade {
         System.out.println("---------- Attempt to add a coupon that has been expired to CustomersVsCoupons ---------");
         System.out.println("Attempting to add coupons:");
         try {
-            Coupon couponToPurchase12 = companyFacade.getSingleCoupon(6);
+            Coupon couponToPurchase12 = companyFacade1.getSingleCoupon(6);
             Date reduceDate = DateUtils.javaDateFromLocalDate(LocalDate.now().minusDays(2));
-            System.out.println("The update Date: " + DateUtils.beautifyDate(reduceDate));
             couponToPurchase12.setEndDate(reduceDate);
             System.out.println(couponToPurchase12);
-            customerFacade.addCoupon(couponToPurchase12);
+            System.out.println("The date was updated to an expired date: " + DateUtils.beautifyDate(reduceDate));
+            customerFacade1.addCoupon(couponToPurchase12);
             System.out.println("The coupon was added:");
-            customerFacade.getAllCustomerCoupons().forEach(System.out::println);
+            customerFacade1.getAllCustomerCoupons().forEach(System.out::println);
         } catch (invalidCompanyException | invalidCustomerException e) {
             System.out.println(e.getMessage());
         }
@@ -535,31 +488,32 @@ public class TestFacade {
 
         System.out.println("------------ Attempt to add a coupon that already exist in CustomersVsCoupons ----------");
         System.out.println("Attempting to add coupon:");
-        System.out.println(couponToPurchase1);
         try {
-            if (couponToPurchase1 != null) {
-                customerFacade.addCoupon(couponToPurchase1);
-            }
+            Coupon existingCoupon = companyFacade1.getSingleCoupon(1);
+            System.out.println(existingCoupon);
+            customerFacade1.addCoupon(existingCoupon);
             System.out.println("The coupon was added:");
-            customerFacade.getAllCustomerCoupons().forEach(System.out::println);
-        } catch (invalidCustomerException e) {
+            customerFacade1.getAllCustomerCoupons().forEach(System.out::println);
+        } catch (invalidCustomerException | invalidCompanyException e) {
             System.out.println(e.getMessage());
         }
         System.out.println();
 
         System.out.println("----------------------- Get all coupons from a specific category -----------------------");
         try {
-            if (couponToPurchase2 != null) {
-                customerFacade.getAllCustomerCouponsOfSpecificCategory(couponToPurchase2.getCategory()).forEach(System.out::println);
-            }
-        } catch (invalidCustomerException e) {
+            Coupon couponToCheck = companyFacade1.getSingleCoupon(2);
+            customerFacade1.getAllCustomerCouponsOfSpecificCategory(couponToCheck.getCategory()).forEach(System.out::println);
+        } catch (invalidCustomerException | invalidCompanyException e) {
             System.out.println(e.getMessage());
         }
         System.out.println();
 
         System.out.println("------------------------ Get all coupons up to the maximum price -----------------------");
         try {
-            customerFacade.getAllCustomerCouponsUpToMaxPrice(80).forEach(System.out::println);
+            System.out.println("High attempt:");
+            customerFacade1.getAllCustomerCouponsUpToMaxPrice(95).forEach(System.out::println);
+            System.out.println("Low attempt:");
+            customerFacade1.getAllCustomerCouponsUpToMaxPrice(62).forEach(System.out::println);
         } catch (invalidCustomerException e) {
             System.out.println(e.getMessage());
         }
@@ -567,7 +521,7 @@ public class TestFacade {
 
         System.out.println("---------------------------- Get the logged customer details ---------------------------");
         try {
-            System.out.println(customerFacade.getTheLoggedCustomerDetails());
+            System.out.println(customerFacade1.getTheLoggedCustomerDetails());
         } catch (invalidCustomerException e) {
             System.out.println(e.getMessage());
         }
@@ -576,69 +530,36 @@ public class TestFacade {
         System.out.println(ArtUtils.DELETING_METHODS);
 
         System.out.println("--------------------------- Company attempt to delete a coupon -------------------------");
-        Coupon couponToDelete = null;
         try {
-            couponToDelete = companyFacade2.getSingleCoupon(9);
-        } catch (invalidCompanyException e) {
-            System.out.println(e.getMessage());
-        }
-        System.out.println("Attempt to delete the coupon: ");
-        System.out.println(couponToDelete);
-        System.out.println();
-
-        System.out.println("The customers that purchase the coupon are: ");
-        try {
-            if (couponToDelete != null) {
-                companyFacade2.getAllCompanyCustomersOfASingleCouponByCouponId(couponToDelete.getId()).forEach(System.out::println);
-            }
-        } catch (invalidCompanyException e) {
-            System.out.println(e.getMessage());
-        }
-        try {
-            if (couponToDelete != null) {
-                companyFacade2.deleteCoupon(couponToDelete);
-            }
-        } catch (invalidCompanyException e) {
-            System.out.println(e.getMessage());
-        }
-        System.out.println("The coupon was deleted! ");
-        System.out.println();
-
-        try {
+            Coupon couponToDelete = companyFacade2.getSingleCoupon(9);
+            System.out.println("Attempt to delete the coupon: ");
+            System.out.println(couponToDelete);
+            System.out.println();
+            System.out.println("The customers that purchase the coupon are: ");
+            companyFacade2.getAllCompanyCustomersOfASingleCouponByCouponId(couponToDelete.getId()).forEach(System.out::println);
+            companyFacade2.deleteCoupon(couponToDelete);
+            System.out.println("The coupon was deleted! ");
+            System.out.println();
             System.out.println("Company coupons left :");
             companyFacade2.getAllCompanyCoupons().forEach(System.out::println);
-        } catch (invalidCompanyException e) {
-            e.printStackTrace();
-        }
-        System.out.println();
-
-        System.out.println("The customer that purchase the coupon after deleting the coupon:");
-        try {
-            if (couponToDelete != null) {
-                companyFacade2.getAllCompanyCustomersOfASingleCouponByCouponId(couponToDelete.getId()).forEach(System.out::println);
-            }
+            System.out.println();
+            System.out.println("The customer that purchase the coupon after deleting the coupon:");
+            companyFacade2.getAllCompanyCustomersOfASingleCouponByCouponId(couponToDelete.getId()).forEach(System.out::println);
         } catch (invalidCompanyException e) {
             System.out.println(e.getMessage());
         }
-
-        System.out.println("------------------------------ Deleting an existing customer ---------------------------");
-        Customer customerToDelete = adminFacade.getSingleCustomer(7);
-        System.out.println("Attempting to delete customer: ");
-        System.out.println(customerToDelete);
         System.out.println();
 
+        System.out.println("------------------------------ Deleting an existing customer ---------------------------");
         try {
+            Customer customerToDelete = adminFacade.getSingleCustomer(7);
+            System.out.println("Attempting to delete customer: ");
+            System.out.println(customerToDelete);
             adminFacade.deleteCustomer(customerToDelete);
             System.out.println("Customer deleted!");
             System.out.println("Customers left:");
             adminFacade.getAllCustomers().forEach(System.out::println);
-        } catch (invalidCustomerException | invalidAdminException e) {
-            System.out.println(e.getMessage());
-        }
-        System.out.println();
-
-        System.out.println("Is customer exist: ");
-        try {
+            System.out.println("Is customer exist: ");
             adminFacade.getAllCustomersVsCoupons(customerToDelete.getId()).forEach(System.out::println);
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
@@ -646,17 +567,17 @@ public class TestFacade {
         System.out.println();
 
         System.out.println("------------------------------ Deleting an existing company ----------------------------");
-        Company companyToDelete = adminFacade.getSingleCompany(2);
-        System.out.println("Attempting to delete company: ");
-        System.out.println(companyToDelete);
-        System.out.println();
 
         try {
+            Company companyToDelete = adminFacade.getSingleCompany(2);
+            System.out.println("Attempting to delete company: ");
+            System.out.println(companyToDelete);
+            System.out.println();
             adminFacade.deleteCompany(companyToDelete);
             System.out.println("Company deleted!");
             System.out.println("Companies left:");
             adminFacade.getAllCompanies().forEach(System.out::println);
-        } catch (invalidCustomerException | invalidAdminException e) {
+        } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
         }
         System.out.println();

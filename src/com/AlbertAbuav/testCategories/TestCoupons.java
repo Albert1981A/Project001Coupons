@@ -108,15 +108,20 @@ public class TestCoupons {
         System.out.println("--------------------------- CREATE COUPONS ----------------------------");
         Coupon coupon1 = new Coupon();
         Coupon coupon2 = new Coupon();
+        Coupon coupon3 = new Coupon();
+        coupon3.setCompanyID(2);
         System.out.println(coupon1);
         System.out.println(coupon2);
+        System.out.println(coupon3);
         System.out.println("Checking Date SQL before entering the DB: " + DateUtils.convertJavaDateToSqlDate(coupon1.getStartDate()));
         System.out.println("Checking Date SQL before entering the DB: " + DateUtils.convertJavaDateToSqlDate(coupon2.getStartDate()));
+        System.out.println("Checking Date SQL before entering the DB: " + DateUtils.convertJavaDateToSqlDate(coupon3.getStartDate()));
         System.out.println();
 
         System.out.println("-------------------------- QUERY ADD COUPON ----------------------------");
         couponsDAO.addCoupon(coupon1);
         couponsDAO.addCoupon(coupon2);
+        couponsDAO.addCoupon(coupon3);
         System.out.println();
 
         System.out.println("------------------------ QUERY GET ALL COUPONS -------------------------");
@@ -142,9 +147,11 @@ public class TestCoupons {
         System.out.println();
 
         System.out.println("---------------------- QUERY_ADD_COUPON_PURCHASE ------------------------");
+
         couponsDAO.addCouponPurchase(1, 1);
+        couponsDAO.addCouponPurchase(1, 3);
         System.out.println("Purchase a coupon by customer: " + customersDAO.getSingleCustomer(1));
-        System.out.println("He Purchase coupon: " + couponsDAO.getSingleCoupon(1));
+        System.out.println("Purchase a coupon by customer: " + customersDAO.getSingleCustomer(3));
         System.out.println();
 
         System.out.println("---------------- QUERY_GET_ALL_CUSTOMER_COUPON_PURCHASE------------------");
@@ -159,8 +166,8 @@ public class TestCoupons {
 
         System.out.println("---------------- QUERY_GET_ALL_CUSTOMER_COUPON_PURCHASE------------------");
         couponsDAO.getAllCustomersCoupons(1).forEach(System.out::println);
+        System.out.println("");
         System.out.println();
-
 
         /**
          * closing all connections.

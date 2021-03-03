@@ -5,7 +5,7 @@ import java.util.List;
 public class PrintUtils {
 
     public static String listToString(List<?> list) {
-        String result = "+";
+        String result = " ";
         for (int i = 0; i < list.size(); i++) {
             result += "\n " + list.get(i);
         }

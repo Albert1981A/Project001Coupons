@@ -76,7 +76,8 @@ public class TestCustomers {
         System.out.println();
 
         System.out.println("------------------------- QUERY UPDATE CUSTOMER --------------------------");
-        Customer toUpdate = customersDAO.getSingleCustomer(1);
+        Customer toUpdate = null;
+        toUpdate = customersDAO.getSingleCustomer(1);
         toUpdate.setFirstName("The first Customer");
         customersDAO.updateCustomer(toUpdate);
         customersDAO.getAllCustomers().forEach(System.out::println);
@@ -87,18 +88,21 @@ public class TestCustomers {
         System.out.println();
 
         System.out.println("------------------------- QUERY DELETE CUSTOMER --------------------------");
-        Customer toDelete = customersDAO.getSingleCustomer(5);
+        Customer toDelete = null;
+        toDelete = customersDAO.getSingleCustomer(5);
         customersDAO.deleteCustomer(toDelete.getId());
         customersDAO.getAllCustomers().forEach(System.out::println);
         System.out.println();
 
         System.out.println("----------------------- QUERY IS CUSTOMER EXISTS -------------------------");
-        Customer cu1 = customersDAO.getSingleCustomer(4);
+        Customer cu1 = null;
+        cu1 = customersDAO.getSingleCustomer(4);
         System.out.println("Customer number 4 exists: " + customersDAO.isCustomerExists(cu1.getEmail(), cu1.getPassword()));
         System.out.println();
 
         System.out.println("------------------ GET CUSTOMER BY EMAIL AND PASSWORD --------------------");
-        Customer cu2 = customersDAO.getSingleCustomer(3);
+        Customer cu2 = null;
+        cu2 = customersDAO.getSingleCustomer(3);
         System.out.println("Customer number 3 exists: " + customersDAO.getCustomerByEmailAndPassword(cu2.getEmail(), cu2.getPassword()));
         System.out.println();
         System.out.println();

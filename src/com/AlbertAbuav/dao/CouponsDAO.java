@@ -15,6 +15,8 @@ public interface CouponsDAO {
 
     List<Coupon> getAllCoupons();
 
+    List<Coupon> getAllExpiredCoupons();
+
     Coupon getSingleCoupon(int couponID);
 
     void addCouponPurchase(int customerID, int couponID);

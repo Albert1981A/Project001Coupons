@@ -11,6 +11,7 @@ import com.AlbertAbuav.utils.DateUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -129,6 +130,42 @@ public class CouponsDBDAO implements CouponsDAO {
                 String image = resultSet.getString(10);
                 Coupon tmp = new Coupon(id, companyID, category, title, description, startDate, endDate, amount, price, image);
                 coupons.add(tmp);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            // Step 5
+            ConnectionPool.getInstance().returnConnection(connection);
+        }
+        return coupons;
+    }
+
+    @Override
+    public List<Coupon> getAllExpiredCoupons() {
+        List<Coupon> coupons = new ArrayList<>();
+        Connection connection = null;
+        try {
+            // Step 2
+            connection = ConnectionPool.getInstance().getConnection();
+            // Step 3
+            PreparedStatement statement = connection.prepareStatement(QUERY_GET_ALL_COUPONS);
+            // Step 4
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()) {
+                int id = resultSet.getInt(1);
+                int companyID = resultSet.getInt(2);
+                Category category = Category.values()[(resultSet.getInt(3))-1];
+                String title = resultSet.getString(4);
+                String description = resultSet.getString(5);
+                Date startDate = resultSet.getDate(6);
+                Date endDate = resultSet.getDate(7);
+                int amount = resultSet.getInt(8);
+                double price = resultSet.getDouble(9);
+                String image = resultSet.getString(10);
+                Coupon tmp = new Coupon(id, companyID, category, title, description, startDate, endDate, amount, price, image);
+                if (tmp.getEndDate().before(DateUtils.javaDateFromLocalDate(LocalDate.now()))) {
+                    coupons.add(tmp);
+                }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
