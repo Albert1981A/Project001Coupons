@@ -36,5 +36,8 @@ public class TestArt {
 
         System.out.println(ArtUtils.DELETING_METHODS);
         System.out.println();
+
+        System.out.println(ArtUtils.CHECK_THREAD);
+        System.out.println();
     }
 }

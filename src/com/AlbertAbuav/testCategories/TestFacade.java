@@ -16,15 +16,17 @@ import com.AlbertAbuav.facades.CompanyFacade;
 import com.AlbertAbuav.facades.CustomerFacade;
 import com.AlbertAbuav.login.ClientType;
 import com.AlbertAbuav.login.LoginManager;
+import com.AlbertAbuav.tasks.DailyExpiredCoupons;
 import com.AlbertAbuav.utils.ArtUtils;
 import com.AlbertAbuav.utils.DateUtils;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class TestFacade {
 
-    public static void main(String[] args) {
+    public static void testAll() {
 
         System.out.println("START");
 
@@ -86,26 +88,6 @@ public class TestFacade {
             for (int i = 0; i < 10; i++) {
                 adminFacade.addCompany(new Company());
             }
-//            Company c1 = new Company();
-//            adminFacade.addCompany(c1);
-//            Company c2 = new Company();
-//            adminFacade.addCompany(c2);
-//            Company c3 = new Company();
-//            adminFacade.addCompany(c3);
-//            Company c4 = new Company();
-//            adminFacade.addCompany(c4);
-//            Company c5 = new Company();
-//            adminFacade.addCompany(c5);
-//            Company c6 = new Company();
-//            adminFacade.addCompany(c6);
-//            Company c7 = new Company();
-//            adminFacade.addCompany(c7);
-//            Company c8 = new Company();
-//            adminFacade.addCompany(c8);
-//            Company c9 = new Company();
-//            adminFacade.addCompany(c9);
-//            Company c10 = new Company();
-//            adminFacade.addCompany(c10);
             adminFacade.getAllCompanies().forEach(System.out::println);
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
@@ -527,6 +509,10 @@ public class TestFacade {
         }
         System.out.println();
 
+
+        /**
+         * Checking deleting methods of the different facades.
+         */
         System.out.println(ArtUtils.DELETING_METHODS);
 
         System.out.println("--------------------------- Company attempt to delete a coupon -------------------------");
@@ -588,6 +574,70 @@ public class TestFacade {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        System.out.println();
+
+        /**
+         * Checking the Thread of the daily expired coupons.
+         */
+        System.out.println(ArtUtils.CHECK_THREAD);
+
+        System.out.println("------------------------ Entering coupons with an expired date -------------------------");
+        System.out.println();
+
+        try {
+            for (int i = 0; i < 3; i++) {
+                Coupon temp2 = new Coupon();
+                temp2.setCompanyID(4);
+                companyFacade1.addCoupon(temp2);
+                Coupon expiredCoupon1 = companyFacade1.getSingleCoupon(i + 14);
+                customerFacade1.addCoupon(expiredCoupon1);
+                expiredCoupon1.setStartDate(DateUtils.javaDateFromLocalDate(LocalDate.now().minusDays(19)));
+                expiredCoupon1.setEndDate(DateUtils.javaDateFromLocalDate(LocalDate.now().minusDays(12)));
+                companyFacade1.updateCoupon(expiredCoupon1);
+                System.out.println("Expired coupons that was added:");
+                System.out.println(companyFacade1.getSingleCoupon(expiredCoupon1.getId()));
+            }
+        }  catch (invalidCustomerException | invalidCompanyException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
+        try {
+            System.out.println("All coupons of company id-4:");
+            companyFacade1.getAllCompanyCoupons().forEach(System.out::println);
+            System.out.println("All customer id-4 details:");
+            System.out.println(customerFacade1.getTheLoggedCustomerDetails());
+        } catch (invalidCompanyException | invalidCustomerException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
+
+        System.out.println("-------------------- Checking the Thread of the daily expired coupons ------------------");
+
+        /**
+         * The thread will run for 200 millis on the test.
+         * Will be set for 24 hours on the live program.
+         */
+        DailyExpiredCoupons dailyExpiredCoupons = new DailyExpiredCoupons();
+        new Thread(dailyExpiredCoupons, "DailyExpiredCoupons1").start();
+
+        /**
+         * Stopping DailyExpiredCoupons thread.
+         */
+        System.out.println(Thread.currentThread().getName() + " is stopping DailyExpiredCoupons thread");
+        dailyExpiredCoupons.stop();
+
+        /**
+         * Checking if DailyExpiredCoupons thread stopped.
+         */
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println(Thread.currentThread().getName() + " is finished now");
         System.out.println();
 
         /**
