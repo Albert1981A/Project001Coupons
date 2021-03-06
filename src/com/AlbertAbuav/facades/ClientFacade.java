@@ -6,6 +6,9 @@ import com.AlbertAbuav.dao.CustomersDAO;
 import com.AlbertAbuav.dbdao.CompaniesDBDAO;
 import com.AlbertAbuav.dbdao.CouponsDBDAO;
 import com.AlbertAbuav.dbdao.CustomersDBDAO;
+import com.AlbertAbuav.exceptions.invalidAdminException;
+import com.AlbertAbuav.exceptions.invalidCompanyException;
+import com.AlbertAbuav.exceptions.invalidCustomerException;
 
 public abstract class ClientFacade {
     /**
@@ -16,6 +19,6 @@ public abstract class ClientFacade {
     protected CustomersDAO customersDAO = new CustomersDBDAO();
     protected CouponsDAO couponsDAO = new CouponsDBDAO();
 
-    public abstract boolean login(String email, String password);
+    public abstract boolean login(String email, String password) throws invalidCompanyException, invalidAdminException, invalidCustomerException;
 
 }

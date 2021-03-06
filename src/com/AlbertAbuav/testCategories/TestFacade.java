@@ -77,8 +77,23 @@ public class TestFacade {
          * Login to Admin Facade
          */
         System.out.println(ArtUtils.ADMIN_FACADE);
-        AdminFacade adminFacade = (AdminFacade)loginManager.login("admin@admin.com", "admin", ClientType.ADMINISTRATOR);
+
+        AdminFacade adminFacade = null;
+
+        System.out.println("------------------ Attempting to Connect to Admin with false parameters ----------------");
+        try {
+            adminFacade = (AdminFacade) loginManager.login("false@false.com", "false", ClientType.ADMINISTRATOR);
+        } catch (invalidCompanyException | invalidCustomerException | invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
+
         System.out.println("------------------------------ Checking Connection to Admin ----------------------------");
+        try {
+            adminFacade = (AdminFacade) loginManager.login("admin@admin.com", "admin", ClientType.ADMINISTRATOR);
+        } catch (invalidCompanyException | invalidCustomerException | invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
+
         System.out.println(adminFacade);
         System.out.println();
 
@@ -95,7 +110,7 @@ public class TestFacade {
         System.out.println();
 
         System.out.println("--------------------- Attempt to add a company with an existing name -------------------");
-        Company temp =null;
+        Company temp = null;
         try {
             temp = adminFacade.getSingleCompany(1);
             Company companyToAdd1 = new Company(temp.getName(), "email@email.com", "11111");
@@ -235,6 +250,7 @@ public class TestFacade {
         Company loggedCompany1 = null;
         Company loggedCompany2 = null;
         Company loggedCompany3 = null;
+
         try {
             loggedCompany1 = adminFacade.getSingleCompany(4);
             loggedCompany2 = adminFacade.getSingleCompany(2);
@@ -242,11 +258,25 @@ public class TestFacade {
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
         }
-        CompanyFacade companyFacade1 = (CompanyFacade)loginManager.login(loggedCompany1.getEmail(), loggedCompany1.getPassword(), ClientType.COMPANY);
-        CompanyFacade companyFacade2 = (CompanyFacade)loginManager.login(loggedCompany2.getEmail(), loggedCompany2.getPassword(), ClientType.COMPANY);
-        CompanyFacade companyFacade3 = (CompanyFacade)loginManager.login(loggedCompany3.getEmail(), loggedCompany3.getPassword(), ClientType.COMPANY);
+        CompanyFacade companyFacade1 = null;
+        CompanyFacade companyFacade2 = null;
+        CompanyFacade companyFacade3 = null;
+
+        System.out.println("---------------- Attempting to Connect to a company with false parameters --------------");
+        try {
+            companyFacade1 = (CompanyFacade) loginManager.login("false@false.com", "false", ClientType.COMPANY);
+        } catch (invalidCompanyException | invalidCustomerException | invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
 
         System.out.println("----------------------------- Checking Connection to Company ---------------------------");
+        try {
+            companyFacade1 = (CompanyFacade) loginManager.login(loggedCompany1.getEmail(), loggedCompany1.getPassword(), ClientType.COMPANY);
+            companyFacade2 = (CompanyFacade) loginManager.login(loggedCompany2.getEmail(), loggedCompany2.getPassword(), ClientType.COMPANY);
+            companyFacade3 = (CompanyFacade) loginManager.login(loggedCompany3.getEmail(), loggedCompany3.getPassword(), ClientType.COMPANY);
+        } catch (invalidCompanyException | invalidCustomerException | invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
 
         System.out.println(companyFacade1);
         System.out.println(companyFacade2);
@@ -262,10 +292,9 @@ public class TestFacade {
         System.out.println();
 
         System.out.println("---------------------------- Adding new coupon to the company --------------------------");
-        System.out.println();
 
-        System.out.println("Trying to add coupons: ");
-        System.out.println("----------------------");
+        System.out.println("Coupons were added:");
+        System.out.println("-------------------");
         try {
             for (int i = 0; i < 7; i++) {
                 companyFacade1.addCoupon(new Coupon(loggedCompany1.getId()));
@@ -289,7 +318,20 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("--------------------------------- Update a company coupon ------------------------------");
+        System.out.println("---------------------------- Update a company coupon start date ------------------------");
+        try {
+            Coupon couponToUpdateD = companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(1);
+            System.out.println("Trying to update the \"startDate\" of coupon id-2 to be \"current date\": ");
+            System.out.println(couponToUpdateD);
+            couponToUpdateD.setStartDate(DateUtils.addOneDayToUtilDate(DateUtils.javaDateFromLocalDate(LocalDate.now())));
+            companyFacade1.updateCoupon(couponToUpdateD);
+            System.out.println(companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(1));
+        } catch (invalidCompanyException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
+        System.out.println("---------------------------- Update a company coupon amount ------------------------");
         try {
             Coupon couponToUpdate = companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(1);
             System.out.println("Trying to update the \"amount\" of coupon id-2 to be \"23\": ");
@@ -388,10 +430,26 @@ public class TestFacade {
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
         }
-        CustomerFacade customerFacade1 = (CustomerFacade) loginManager.login(loggedCustomer1.getEmail(), loggedCustomer1.getPassword(), ClientType.CUSTOMER);
-        CustomerFacade customerFacade2 = (CustomerFacade) loginManager.login(loggedCustomer2.getEmail(), loggedCustomer2.getPassword(), ClientType.CUSTOMER);
-        CustomerFacade customerFacade3 = (CustomerFacade) loginManager.login(loggedCustomer3.getEmail(), loggedCustomer3.getPassword(), ClientType.CUSTOMER);
+        CustomerFacade customerFacade1 = null;
+        CustomerFacade customerFacade2 = null;
+        CustomerFacade customerFacade3 = null;
+
+        System.out.println("---------------- Attempting to Connect to a customer with false parameters --------------");
+        try {
+            customerFacade1 = (CustomerFacade) loginManager.login("false@false.com", "false", ClientType.CUSTOMER);
+        } catch (invalidCompanyException | invalidCustomerException | invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
+
         System.out.println("----------------------------- Checking Connection to Customer --------------------------");
+        try {
+            customerFacade1 = (CustomerFacade) loginManager.login(loggedCustomer1.getEmail(), loggedCustomer1.getPassword(), ClientType.CUSTOMER);
+            customerFacade2 = (CustomerFacade) loginManager.login(loggedCustomer2.getEmail(), loggedCustomer2.getPassword(), ClientType.CUSTOMER);
+            customerFacade3 = (CustomerFacade) loginManager.login(loggedCustomer3.getEmail(), loggedCustomer3.getPassword(), ClientType.CUSTOMER);
+        } catch (invalidCompanyException | invalidCustomerException | invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
+
         System.out.println(customerFacade1);
         System.out.println(customerFacade2);
         System.out.println(customerFacade3);
@@ -591,13 +649,13 @@ public class TestFacade {
                 companyFacade1.addCoupon(temp2);
                 Coupon expiredCoupon1 = companyFacade1.getSingleCoupon(i + 14);
                 customerFacade1.addCoupon(expiredCoupon1);
-                expiredCoupon1.setStartDate(DateUtils.javaDateFromLocalDate(LocalDate.now().minusDays(19)));
-                expiredCoupon1.setEndDate(DateUtils.javaDateFromLocalDate(LocalDate.now().minusDays(12)));
+                expiredCoupon1.setStartDate(DateUtils.addOneDayToUtilDate(DateUtils.javaDateFromLocalDate(LocalDate.now().minusDays(19))));
+                expiredCoupon1.setEndDate(DateUtils.addOneDayToUtilDate(DateUtils.javaDateFromLocalDate(LocalDate.now().minusDays(12))));
                 companyFacade1.updateCoupon(expiredCoupon1);
                 System.out.println("Expired coupons that was added:");
                 System.out.println(companyFacade1.getSingleCoupon(expiredCoupon1.getId()));
             }
-        }  catch (invalidCustomerException | invalidCompanyException e) {
+        } catch (invalidCustomerException | invalidCompanyException e) {
             System.out.println(e.getMessage());
         }
         System.out.println();

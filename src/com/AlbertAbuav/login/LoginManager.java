@@ -1,5 +1,8 @@
 package com.AlbertAbuav.login;
 
+import com.AlbertAbuav.exceptions.invalidAdminException;
+import com.AlbertAbuav.exceptions.invalidCompanyException;
+import com.AlbertAbuav.exceptions.invalidCustomerException;
 import com.AlbertAbuav.facades.AdminFacade;
 import com.AlbertAbuav.facades.ClientFacade;
 import com.AlbertAbuav.facades.CompanyFacade;
@@ -35,7 +38,7 @@ public class LoginManager {
      * @param clientType String
      * @return ClientFacade
      */
-    public ClientFacade login(String email, String password, ClientType clientType) {
+    public ClientFacade login(String email, String password, ClientType clientType) throws invalidCompanyException, invalidCustomerException, invalidAdminException {
         ClientFacade clientFacade;
         switch (clientType) {
             case ADMINISTRATOR:

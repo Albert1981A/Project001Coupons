@@ -21,11 +21,12 @@ public class CompanyFacade extends ClientFacade {
      * @return boolean
      */
     @Override
-    public boolean login(String email, String password) {
-        boolean isExist = companiesDAO.isCompanyExists(email, password);
-        if (isExist) {
-            companyID = companiesDAO.getCompanyByEmailAndPassword(email, password).getId();
+    public boolean login(String email, String password) throws invalidCompanyException {
+        if (!companiesDAO.isCompanyExists(email, password)) {
+            throw new invalidCompanyException("Could not login. One or both parameters are incorrect!");
         }
+        boolean isExist = companiesDAO.isCompanyExists(email, password);
+        companyID = companiesDAO.getCompanyByEmailAndPassword(email, password).getId();
         return isExist;
     }
 

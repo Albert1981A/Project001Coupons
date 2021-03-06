@@ -22,8 +22,11 @@ public class AdminFacade extends ClientFacade {
      * @return boolean
      */
     @Override
-    public boolean login(String email, String password) {
-        return (email.equals("admin@admin.com") && password.equals("admin"));
+    public boolean login(String email, String password) throws invalidAdminException {
+        if (!(email.equals("admin@admin.com") && password.equals("admin"))) {
+            throw new invalidAdminException("Could not login. One or both parameters are incorrect!");
+        }
+        return true;
     }
 
     /**
