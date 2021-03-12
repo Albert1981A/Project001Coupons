@@ -99,7 +99,6 @@ public class DBUtils {
             }
             // Step 4
             resultSet = statement.executeQuery();
-
         } catch (Exception e) {
             System.out.println(e.getMessage());
         } finally {

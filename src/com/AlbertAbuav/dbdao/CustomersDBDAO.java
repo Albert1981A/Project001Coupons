@@ -2,11 +2,8 @@ package com.AlbertAbuav.dbdao;
 
 import com.AlbertAbuav.beans.Customer;
 import com.AlbertAbuav.dao.CustomersDAO;
-import com.AlbertAbuav.db.ConnectionPool;
 import com.AlbertAbuav.utils.DBUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,12 +13,14 @@ import java.util.Map;
 
 public class CustomersDBDAO implements CustomersDAO {
 
-    private static final String QUERY_IS_CUSTOMER_EXISTS = "SELECT * FROM `couponsystem`.`customers` WHERE `email`=? and `password`=?;";
+    private static final String QUERY_IS_CUSTOMER_EXISTS = "SELECT * FROM `couponsystem`.`customers` WHERE EXISTS (SELECT * FROM `couponsystem`.`customers` WHERE `email`=? and `password`=?);";
+    private static final String QUERY_GET_CUSTOMER_BY_EMAIL_AND_PASSWORD = "SELECT * FROM `couponsystem`.`customers` WHERE `email`=? and `password`=?;";
     private static final String QUERY_INSERT_CUSTOMER = "INSERT INTO `couponsystem`.`customers` (`first_name`, `last_name`, `email`, `password`) VALUES (?, ?, ?, ?);";
     private static final String QUERY_UPDATE_CUSTOMER = "UPDATE `couponsystem`.`customers` SET `first_name` = ?, `last_name` = ?, `email` = ?, `password` = ? WHERE (`id` = ?);";
     private static final String QUERY_DELETE_CUSTOMER = "DELETE FROM `couponsystem`.`customers` WHERE (`id` = ?);";
     private static final String QUERY_GET_ALL_CUSTOMERS = "SELECT * FROM `couponsystem`.`customers`;";
     private static final String QUERY_GET_SINGLE_CUSTOMER = "SELECT * FROM `couponsystem`.`customers` WHERE (`id` = ?);";
+    private static final String QUERY_GET_SINGLE_CUSTOMER_BY_EMAIL = "SELECT * FROM `couponsystem`.`customers` WHERE EXISTS (SELECT * FROM `couponsystem`.`customers` WHERE (`email` = ?));";
 
     /**
      * To perform an operation from the code to the database there are five steps.
@@ -235,13 +234,49 @@ public class CustomersDBDAO implements CustomersDAO {
         return customer;
     }
 
+//    @Override
+//    public Customer getSingleCustomerByEmail(String email) {
+//        Customer customer = null;
+//        Map<Integer, Object> map = new HashMap<>();
+//        map.put(1, email);
+//        ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_GET_SINGLE_CUSTOMER_BY_EMAIL, map);
+//        try {
+//            if (resultSet != null) {
+//                resultSet.next();
+//                int id = resultSet.getInt(1);
+//                String firsName = resultSet.getString(2);
+//                String lastName = resultSet.getString(3);
+//                String password = resultSet.getString(5);
+//                customer = new Customer(id, firsName, lastName, email, password);
+//            }
+//        } catch (SQLException e) {
+//            //System.out.println(e.getMessage());
+//        }
+//        return customer;
+//    }
+
+    @Override
+    public boolean getSingleCustomerByEmail(String email) {
+        Map<Integer, Object> map = new HashMap<>();
+        map.put(1, email);
+        ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_GET_SINGLE_CUSTOMER_BY_EMAIL, map);
+        try {
+            if (resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
     @Override
     public Customer getCustomerByEmailAndPassword(String email, String password) {
         Customer customer = null;
         Map<Integer, Object> map = new HashMap<>();
         map.put(1, email);
         map.put(2, password);
-        ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_IS_CUSTOMER_EXISTS, map);
+        ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_GET_CUSTOMER_BY_EMAIL_AND_PASSWORD, map);
         try {
             resultSet.next();
             int id = resultSet.getInt(1);

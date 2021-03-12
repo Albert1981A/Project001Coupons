@@ -8,6 +8,7 @@ import com.AlbertAbuav.exceptions.invalidAdminException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class AdminFacade extends ClientFacade {
 
@@ -37,20 +38,12 @@ public class AdminFacade extends ClientFacade {
      * @param company Company
      */
     public void addCompany(Company company) throws invalidAdminException {
-        if (company == null) {
-            throw new invalidAdminException("There is no customer like you entered!");
-        }
-        if (companiesDAO.getAllCompanies() == null) {
-            companiesDAO.addCompany(company);
-            return;
-        }
-        List<Company> companyList = companiesDAO.getAllCompanies();
-        for (Company c : companyList) {
-            if (company.getName().equals(c.getName())) {
-                throw new invalidAdminException("The name of the company you are trying to add already appears in the system.\nCompanies with the same name cannot be added.");
-            } else if (company.getEmail().equals(c.getEmail())) {
-                throw new invalidAdminException("The email of the company you are trying to add already appears in the system.\nCompanies with the same email cannot be added.");
-            }
+        if (Objects.isNull(company)) {
+            throw new invalidAdminException("There is no customer like the one you entered!");
+        } else if (companiesDAO.isCompanyExistByEmail(company.getEmail())) {
+            throw new invalidAdminException("The email of the company you are trying to add already appears in the system.\nCompanies with the same email cannot be added!");
+        } else if (companiesDAO.isCompanyExistByName(company.getName())) {
+            throw new invalidAdminException("The name of the company you are trying to add already appears in the system.\nCompanies with the same name cannot be added!");
         }
         companiesDAO.addCompany(company);
     }
@@ -63,20 +56,11 @@ public class AdminFacade extends ClientFacade {
      * @param company Company
      */
     public void updateCompany(Company company) throws invalidAdminException {
-        if (companiesDAO.getAllCompanies() == null) {
-            throw new invalidAdminException("There are no companies in the system!");
-        }
-        if (company == null) {
+        if (Objects.isNull(company)) {
             throw new invalidAdminException("There is no customer like you entered!");
         }
-        List<Company> companyList = companiesDAO.getAllCompanies();
-        Company toCompare = null;
-        for (Company company1 : companyList) {
-            if (company.getName().equals(company1.getName())) {
-                toCompare = company1;
-            }
-        }
-        if (toCompare == null) {
+        Company toCompare = companiesDAO.getSingleCompanyByName(company.getName());
+        if (Objects.isNull(toCompare)) {
             throw new invalidAdminException("No company matching the name: \"" + company.getName() + "\", was found:");
         } else if (company.getId() != toCompare.getId()) {
             throw new invalidAdminException("The company id or name cannot be updated");
@@ -92,24 +76,23 @@ public class AdminFacade extends ClientFacade {
      * @param company Company
      */
     public void deleteCompany(Company company) throws invalidAdminException {
-        if (company == null) {
+        if (Objects.isNull(company)) {
             throw new invalidAdminException("There is no company like you entered!");
         }
-        if (companiesDAO.isCompanyExists(company.getEmail(), company.getPassword())) {
-            if (company.getCoupons() != null) {
-                List<Coupon> companyCoupons = company.getCoupons();
-                for (Coupon coupon : companyCoupons) {
-                    List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCouponsByCouponId(coupon.getId());
-                    for (CustomersVsCoupons purchase : purchases) {
-                        couponsDAO.deleteCouponPurchase(purchase.getCustomerID(), purchase.getCouponID());
-                    }
-                    couponsDAO.deleteCoupon(coupon.getId());
-                }
-            }
-            companiesDAO.deleteCompany(company.getId());
-        } else {
+        if (!companiesDAO.isCompanyExistByName(company.getName())) {
             throw new invalidAdminException("There is no company by the name \"" + company.getName() + "\" in the system!");
         }
+        List<Coupon> companyCoupons = company.getCoupons();
+        if (companyCoupons.size() != 0) {
+            for (Coupon coupon : companyCoupons) {
+                List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCouponsByCouponId(coupon.getId());
+                for (CustomersVsCoupons purchase : purchases) {
+                    couponsDAO.deleteCouponPurchase(purchase.getCustomerID(), purchase.getCouponID());
+                }
+                couponsDAO.deleteCoupon(coupon.getId());
+            }
+        }
+        companiesDAO.deleteCompany(company.getId());
     }
 
     /**
@@ -118,10 +101,11 @@ public class AdminFacade extends ClientFacade {
      * @return List
      */
     public List<Company> getAllCompanies() throws invalidAdminException {
-        if (companiesDAO.getAllCompanies() == null) {
+        List<Company> companies = companiesDAO.getAllCompanies();
+        if (companies.size() == 0) {
             throw new invalidAdminException("There are no companies in the system");
         }
-        return companiesDAO.getAllCompanies();
+        return companies;
     }
 
     /**
@@ -131,20 +115,24 @@ public class AdminFacade extends ClientFacade {
      * @return Company
      */
     public Company getSingleCompany(int id) throws invalidAdminException {
-        if (companiesDAO.getSingleCompany(id) == null) {
-            throw new invalidAdminException("No Company was found by this id!");
+        if (id <= 0) {
+            throw new invalidAdminException("There is no id like you enter !");
         }
         Company company = companiesDAO.getSingleCompany(id);
-        if (couponsDAO.getAllCoupons() != null) {
-            List<Coupon> dbCoupons = couponsDAO.getAllCoupons();
+        if (company == null) {
+            throw new invalidAdminException("No Company was found by this id!");
+        }
+        List<Coupon> dbCoupons = couponsDAO.getAllCoupons();
+        if (dbCoupons.size() != 0) {
             List<Coupon> companyCoupons = new ArrayList<>();
             for (Coupon dbCoupon : dbCoupons) {
                 if (dbCoupon.getCompanyID() == id) {
                     companyCoupons.add(dbCoupon);
                 }
             }
-            company.setCoupons(companyCoupons);
-            return company;
+            if (companyCoupons.size() != 0) {
+                company.setCoupons(companyCoupons);
+            }
         }
         return company;
     }
@@ -159,15 +147,8 @@ public class AdminFacade extends ClientFacade {
         if (customer == null) {
             throw new invalidAdminException("There is no customer like you entered");
         }
-        if (customersDAO.getAllCustomers() == null) {
-            customersDAO.addCustomer(customer);
-            return;
-        }
-        List<Customer> customerList = customersDAO.getAllCustomers();
-        for (Customer customer1 : customerList) {
-            if (customer.getEmail().equals(customer1.getEmail())) {
-                throw new invalidAdminException("The email of the customer you are trying to add already appears in the system.\nCustomers with the same email cannot be added.");
-            }
+        if (customersDAO.getSingleCustomerByEmail(customer.getEmail())) {
+            throw new invalidAdminException("The email of the customer you are trying to add already appears in the system.\nCustomers with the same email cannot be added.");
         }
         customersDAO.addCustomer(customer);
     }
@@ -234,10 +215,11 @@ public class AdminFacade extends ClientFacade {
      * @return List
      */
     public List<Customer> getAllCustomers() throws invalidAdminException {
-        if (customersDAO.getAllCustomers() == null) {
+        List<Customer> customers = customersDAO.getAllCustomers();
+        if (customers.size() == 0) {
             throw new invalidAdminException("There are no customers in the system");
         }
-        return customersDAO.getAllCustomers();
+        return customers;
     }
 
     /**

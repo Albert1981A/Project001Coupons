@@ -2,11 +2,8 @@ package com.AlbertAbuav.dbdao;
 
 import com.AlbertAbuav.beans.Company;
 import com.AlbertAbuav.dao.CompaniesDAO;
-import com.AlbertAbuav.db.ConnectionPool;
 import com.AlbertAbuav.utils.DBUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,12 +13,16 @@ import java.util.Map;
 
 public class CompaniesDBDAO implements CompaniesDAO {
 
-    private static final String QUERY_IS_COMPANY_EXISTS = "SELECT * FROM `couponsystem`.`companies` WHERE `email`=? and `password`=?;";
+    private static final String QUERY_IS_COMPANY_EXISTS = "SELECT * FROM `couponsystem`.`companies` WHERE EXISTS (SELECT * FROM `couponsystem`.`companies` WHERE `email`=? and `password`=?);";
+    private static final String QUERY_GET_COMPANY_BY_EMAIL_AND_PASSWORD = "SELECT * FROM `couponsystem`.`companies` WHERE `email`=? and `password`=?;";
+    private static final String QUERY_GET_COMPANY_BY_NAME = "SELECT * FROM `couponsystem`.`companies` WHERE (`name`= ?);";
     private static final String QUERY_INSERT_COMPANY = "INSERT INTO `couponsystem`.`companies` (`name`, `email`, `password`) VALUES (?, ?, ?);";
     private static final String QUERY_UPDATE_COMPANY = "UPDATE `couponsystem`.`companies` SET `name` = ?, `email` = ?, `password` = ? WHERE (`id` = ?);";
     private static final String QUERY_DELETE_COMPANY = "DELETE FROM `couponsystem`.`companies` WHERE (`id` = ?);";
     private static final String QUERY_GET_ALL_COMPANIES = "SELECT * FROM `couponsystem`.`companies`;";
     private static final String QUERY_GET_SINGLE_COMPANY = "SELECT * FROM `couponsystem`.`companies` WHERE (`id` = ?);";
+    private static final String QUERY_IS_COMPANY_EXISTS_BY_NAME = "SELECT * FROM `couponsystem`.`companies` WHERE EXISTS (SELECT * FROM `couponsystem`.`companies` WHERE (`name`= ?));";
+    private static final String QUERY_IS_COMPANY_EXISTS_BY_EMAIL = "SELECT * FROM `couponsystem`.`companies` WHERE EXISTS (SELECT * FROM `couponsystem`.`companies` WHERE (`email`= ?));";
 
     /**
      * To perform an operation from the code to the database there are five steps.
@@ -228,12 +229,61 @@ public class CompaniesDBDAO implements CompaniesDAO {
     }
 
     @Override
+    public Company getSingleCompanyByName(String name) {
+        Company company = null;
+        Map<Integer, Object> map = new HashMap<>();
+        map.put(1, name);
+        ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_GET_COMPANY_BY_NAME, map);
+        try {
+            resultSet.next();
+            int id = resultSet.getInt(1);
+            String email = resultSet.getString(3);
+            String password = resultSet.getString(4);
+            company = new Company(id, name, email, password);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return company;
+    }
+
+    @Override
+    public boolean isCompanyExistByName(String name) {
+        Map<Integer, Object> map = new HashMap<>();
+        map.put(1, name);
+        ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_IS_COMPANY_EXISTS_BY_NAME, map);
+        try {
+            if (resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isCompanyExistByEmail(String email) {
+        Map<Integer, Object> map = new HashMap<>();
+        map.put(1, email);
+        ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_IS_COMPANY_EXISTS_BY_EMAIL, map);
+        try {
+            if (resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
+
+    @Override
     public Company getCompanyByEmailAndPassword(String email, String password) {
         Company company = null;
         Map<Integer, Object> map = new HashMap<>();
         map.put(1, email);
         map.put(2, password);
-        ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_IS_COMPANY_EXISTS, map);
+        ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_GET_COMPANY_BY_EMAIL_AND_PASSWORD, map);
         try {
             resultSet.next();
             int id = resultSet.getInt(1);

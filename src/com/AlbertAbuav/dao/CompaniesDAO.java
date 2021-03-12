@@ -1,7 +1,6 @@
 package com.AlbertAbuav.dao;
 
 import com.AlbertAbuav.beans.Company;
-import com.AlbertAbuav.beans.Coupon;
 
 import java.util.List;
 
@@ -18,6 +17,12 @@ public interface CompaniesDAO {
     List<Company> getAllCompanies();
 
     Company getSingleCompany(int companyID);
+
+    Company getSingleCompanyByName(String name);
+
+    boolean isCompanyExistByName(String name);
+
+    boolean isCompanyExistByEmail(String email);
 
     Company getCompanyByEmailAndPassword(String email, String password);
 

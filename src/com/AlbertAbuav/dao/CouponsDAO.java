@@ -15,6 +15,10 @@ public interface CouponsDAO {
 
     List<Coupon> getAllCoupons();
 
+    List<Coupon> getAllCouponsOfSingleCompany(int companyID);
+
+    boolean isCouponOfSingleCompanyWithSpecificTitleExists(int companyID, String title);
+
     List<Coupon> getAllExpiredCoupons();
 
     Coupon getSingleCoupon(int couponID);

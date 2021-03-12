@@ -20,6 +20,8 @@ public interface CustomersDAO {
 
     Customer getSingleCustomer(int customerID);
 
+    boolean getSingleCustomerByEmail(String email);
+
     Customer getCustomerByEmailAndPassword(String email, String password);
 
 }

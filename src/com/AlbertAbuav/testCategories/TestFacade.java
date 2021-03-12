@@ -22,7 +22,6 @@ import com.AlbertAbuav.utils.DateUtils;
 
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 public class TestFacade {
 
@@ -86,6 +85,7 @@ public class TestFacade {
         } catch (invalidCompanyException | invalidCustomerException | invalidAdminException e) {
             System.out.println(e.getMessage());
         }
+        System.out.println();
 
         System.out.println("------------------------------ Checking Connection to Admin ----------------------------");
         try {
@@ -161,8 +161,26 @@ public class TestFacade {
         try {
             Company companyToUpdate3 = adminFacade.getSingleCompany(4);
             System.out.println("Updating Company: \n" + companyToUpdate3);
-            companyToUpdate3.setName(adminFacade.getSingleCompany(5).getName());
+            String nameB = adminFacade.getSingleCompany(5).getName();
+            System.out.println("Attempt to update the name to: \"" + nameB + "\" witch is an existing name!");
+            companyToUpdate3.setName(nameB);
             adminFacade.updateCompany(companyToUpdate3);
+        } catch (invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
+        System.out.println("------------------------ Attempt to update a Company's Name and id ---------------------");
+
+        try {
+            Company companyToUpdate3b = adminFacade.getSingleCompany(4);
+            System.out.println("Updating Company: \n" + companyToUpdate3b);
+            String nameC = adminFacade.getSingleCompany(5).getName();
+            System.out.println("Attempt to update the name to: \"" + nameC + "\" witch is an existing name!");
+            companyToUpdate3b.setName(nameC);
+            int idC = 3;
+            System.out.println("Attempt to update the id to: \"" + idC + "\" witch is an existing id!");
+            adminFacade.updateCompany(companyToUpdate3b);
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
         }
@@ -255,6 +273,7 @@ public class TestFacade {
             loggedCompany1 = adminFacade.getSingleCompany(4);
             loggedCompany2 = adminFacade.getSingleCompany(2);
             loggedCompany3 = adminFacade.getSingleCompany(3);
+            System.out.println(loggedCompany1 + "\n" + loggedCompany2 + "\n" + loggedCompany3 + "\n");
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
         }
@@ -277,13 +296,14 @@ public class TestFacade {
         } catch (invalidCompanyException | invalidCustomerException | invalidAdminException e) {
             System.out.println(e.getMessage());
         }
+        System.out.println();
 
         System.out.println(companyFacade1);
         System.out.println(companyFacade2);
         System.out.println(companyFacade3);
         System.out.println();
 
-        System.out.println("------ Trying to get all companies coupons when their is no coupons in the system ------");
+        System.out.println("------ Trying to get all companies coupons when there is no coupons in the system ------");
         try {
             companyFacade1.getAllCompanyCoupons().forEach(System.out::println);
         } catch (invalidCompanyException e) {
@@ -295,6 +315,7 @@ public class TestFacade {
 
         System.out.println("Coupons were added:");
         System.out.println("-------------------");
+
         try {
             for (int i = 0; i < 7; i++) {
                 companyFacade1.addCoupon(new Coupon(loggedCompany1.getId()));
@@ -440,6 +461,7 @@ public class TestFacade {
         } catch (invalidCompanyException | invalidCustomerException | invalidAdminException e) {
             System.out.println(e.getMessage());
         }
+        System.out.println();
 
         System.out.println("----------------------------- Checking Connection to Customer --------------------------");
         try {
@@ -449,6 +471,7 @@ public class TestFacade {
         } catch (invalidCompanyException | invalidCustomerException | invalidAdminException e) {
             System.out.println(e.getMessage());
         }
+        System.out.println();
 
         System.out.println(customerFacade1);
         System.out.println(customerFacade2);

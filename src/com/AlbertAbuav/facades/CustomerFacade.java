@@ -30,9 +30,10 @@ public class CustomerFacade extends ClientFacade {
         if (!customersDAO.isCustomerExists(email, password)) {
             throw new invalidCustomerException("Could not login. One or both parameters are incorrect!");
         }
-        boolean isExist = customersDAO.isCustomerExists(email, password);
-        customerID = customersDAO.getCustomerByEmailAndPassword(email, password).getId();
-        return isExist;
+        Customer logged = customersDAO.getCustomerByEmailAndPassword(email, password);
+        System.out.println("The logged Customer is: | " + logged);
+        customerID = logged.getId();
+        return true;
     }
 
     /**

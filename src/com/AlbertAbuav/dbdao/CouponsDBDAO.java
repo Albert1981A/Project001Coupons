@@ -5,12 +5,9 @@ import com.AlbertAbuav.beans.Coupon;
 import com.AlbertAbuav.beans.CustomersVsCoupons;
 import com.AlbertAbuav.dao.CouponsDAO;
 import com.AlbertAbuav.dao.CustomersVsCouponsDAO;
-import com.AlbertAbuav.db.ConnectionPool;
 import com.AlbertAbuav.utils.DBUtils;
 import com.AlbertAbuav.utils.DateUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -18,10 +15,12 @@ import java.util.*;
 
 public class CouponsDBDAO implements CouponsDAO {
 
+    private static final String QUERY_IS_COUPON_EXISTS_BY_CUSTOMER_ID_AND_TITLE = "SELECT * FROM `couponsystem`.`coupons` WHERE EXISTS (SELECT * FROM `couponsystem`.`coupons` WHERE (`company_id` = ?) AND (`title` = ?));";
     private static final String QUERY_INSERT_COUPON = "INSERT INTO `couponsystem`.`coupons` (`company_id`, `category_id`, `title`, `description`, `start_date`, `end_date`, `amount`, `price`, `image`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
     private static final String QUERY_UPDATE_COUPON = "UPDATE `couponsystem`.`coupons` SET `company_id` = ?, `category_id` = ?, `title` = ?, `description` = ?, `start_date` = ?, `end_date` = ?, `amount` = ?, `price` = ?, `image` = ? WHERE (`id` = ?);";
     private static final String QUERY_DELETE_COUPON = "DELETE FROM `couponsystem`.`coupons` WHERE (`id` = ?);";
     private static final String QUERY_GET_ALL_COUPONS = "SELECT * FROM `couponsystem`.`coupons`;";
+    private static final String QUERY_GET_ALL_COUPONS_OF_A_SINGLE_COMPANY = "SELECT * FROM `couponsystem`.`coupons` WHERE (`company_id` = ?);";
     private static final String QUERY_GET_SINGLE_COUPON = "SELECT * FROM `couponsystem`.`coupons` WHERE (`id` = ?);";
 
     CustomersVsCouponsDAO customersVsCouponsDAO = new CustomersVsCouponsDBDAO();
@@ -187,6 +186,48 @@ public class CouponsDBDAO implements CouponsDAO {
 //            ConnectionPool.getInstance().returnConnection(connection);
 //        }
         return coupons;
+    }
+
+    @Override
+    public List<Coupon> getAllCouponsOfSingleCompany(int companyID) {
+        List<Coupon> coupons = new ArrayList<>();
+        Map<Integer, Object> map = new HashMap<>();
+        map.put(1, companyID);
+        ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_GET_ALL_COUPONS_OF_A_SINGLE_COMPANY, map);
+        try {
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                Category category = Category.values()[(resultSet.getInt(3)) - 1];
+                String title = resultSet.getString(4);
+                String description = resultSet.getString(5);
+                Date startDate = resultSet.getDate(6);
+                Date endDate = resultSet.getDate(7);
+                int amount = resultSet.getInt(8);
+                double price = resultSet.getDouble(9);
+                String image = resultSet.getString(10);
+                Coupon tmp = new Coupon(id, companyID, category, title, description, startDate, endDate, amount, price, image);
+                coupons.add(tmp);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return coupons;
+    }
+
+    @Override
+    public boolean isCouponOfSingleCompanyWithSpecificTitleExists(int companyID, String title) {
+        Map<Integer, Object> map = new HashMap<>();
+        map.put(1, companyID);
+        map.put(2, title);
+        ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_IS_COUPON_EXISTS_BY_CUSTOMER_ID_AND_TITLE, map);
+        try {
+            if (resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
     }
 
     @Override
