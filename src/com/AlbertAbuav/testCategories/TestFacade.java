@@ -57,13 +57,12 @@ public class TestFacade {
         System.out.println(ArtUtils.CATEGORIES_DAO);
         System.out.println();
 
-        CategoriesDAO categoriesDAO = new CategoriesDBDAO();
-
-        System.out.println("----------------------- QUERY ADD ALL CATEGORIES ------------------------");
-        System.out.println();
-        categoriesDAO.addCategories();
-
         System.out.println("----------------------- QUERY GET ALL CATEGORIES ------------------------");
+        CategoriesDAO categoriesDAO = new CategoriesDBDAO();
+        categoriesDAO.addCategories();
+        System.out.println("Categories were added!");
+        System.out.println();
+
         categoriesDAO.getAllCategories().forEach(System.out::println);
         System.out.println();
 
@@ -95,6 +94,22 @@ public class TestFacade {
         }
 
         System.out.println(adminFacade);
+        System.out.println();
+
+        System.out.println("---------- Attempt to get all companies when there is no companies in system -----------");
+        try {
+            adminFacade.getAllCompanies().forEach(System.out::println);
+        } catch (invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
+        System.out.println("--------- Attempt to get a single company when there is no companies in system ---------");
+        try {
+            adminFacade.getSingleCompany(1);
+        } catch (invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
         System.out.println();
 
         System.out.println("---------------------------------- Adding new companies --------------------------------");
@@ -198,6 +213,22 @@ public class TestFacade {
         }
         System.out.println();
 
+        System.out.println("---------- Attempt to get all customers when there is no customers in system -----------");
+        try {
+            adminFacade.getAllCustomers().forEach(System.out::println);
+        } catch (invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
+        System.out.println("------- Attempt to get a single customers when there is no customers in system ---------");
+        try {
+            System.out.println(adminFacade.getSingleCustomer(1));
+        } catch (invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
         System.out.println("------------------------------------ Adding Customers ----------------------------------");
         try {
             for (int i = 0; i < 10; i++) {
@@ -218,30 +249,15 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("-------------------------------------- Update customer ---------------------------------");
+        System.out.println("------------------------------- Update a customers first name --------------------------");
         Customer toUpdate = null;
         try {
             toUpdate = adminFacade.getSingleCustomer(1);
-            System.out.println("Update First name of customer: \n" + toUpdate);
+            System.out.println("Update the first name of the customer: \n" + toUpdate);
+            System.out.println("Customer after the update:");
             toUpdate.setFirstName("Laura");
             adminFacade.updateCustomer(toUpdate);
             System.out.println(adminFacade.getSingleCustomer(1));
-        } catch (invalidAdminException e) {
-            System.out.println(e.getMessage());
-        }
-        System.out.println();
-
-        System.out.println("------------------------- Attempt to update a customer email and id --------------------");
-
-        try {
-            Customer toUpdate1 = adminFacade.getSingleCustomer(2);
-            System.out.println("Update email of customer: \n" + toUpdate1);
-            toUpdate1.setEmail("email@email.com");
-            toUpdate1.setId(3);
-            System.out.println(toUpdate1);
-            adminFacade.updateCustomer(toUpdate1);
-            System.out.println(adminFacade.getSingleCustomer(3));
-            System.out.println("The system will choose to change the object according to its - id!");
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
         }
@@ -254,6 +270,22 @@ public class TestFacade {
             System.out.println("Update id of customer: \n" + toUpdate2);
             toUpdate2.setId(2);
             adminFacade.updateCustomer(toUpdate2);
+        } catch (invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
+        System.out.println("------------------------- Attempt to update a customer email and id --------------------");
+
+        try {
+            Customer toUpdate1 = adminFacade.getSingleCustomer(2);
+            System.out.println("Update email and id of customer: \n" + toUpdate1);
+            toUpdate1.setEmail("email@email.com");
+            toUpdate1.setId(3);
+            System.out.println("This are the changes that will be attempted to update: \n" + toUpdate1);
+            adminFacade.updateCustomer(toUpdate1);
+            System.out.println("The system will choose to change the object according to its - id!\nThis is the customer after the update:");
+            System.out.println(adminFacade.getSingleCustomer(3));
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
         }
@@ -273,6 +305,7 @@ public class TestFacade {
             loggedCompany1 = adminFacade.getSingleCompany(4);
             loggedCompany2 = adminFacade.getSingleCompany(2);
             loggedCompany3 = adminFacade.getSingleCompany(3);
+            System.out.println("Login with the companies:");
             System.out.println(loggedCompany1 + "\n" + loggedCompany2 + "\n" + loggedCompany3 + "\n");
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
@@ -287,6 +320,7 @@ public class TestFacade {
         } catch (invalidCompanyException | invalidCustomerException | invalidAdminException e) {
             System.out.println(e.getMessage());
         }
+        System.out.println();
 
         System.out.println("----------------------------- Checking Connection to Company ---------------------------");
         try {
@@ -628,6 +662,30 @@ public class TestFacade {
             adminFacade.getAllCustomers().forEach(System.out::println);
             System.out.println("Is customer exist: ");
             adminFacade.getAllCustomersVsCoupons(customerToDelete.getId()).forEach(System.out::println);
+        } catch (invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
+        System.out.println("-------------- Getting all customers coupons of a customer with no coupons -------------");
+        try {
+            adminFacade.getAllCustomersVsCoupons((adminFacade.getSingleCustomer(9)).getId()).forEach(System.out::println);
+        } catch (invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
+        System.out.println("---------------------- Deleting an existing customer with no coupons -------------------");
+        try {
+            Customer customerToDelete2 = adminFacade.getSingleCustomer(9);
+            System.out.println("Attempting to delete customer: ");
+            System.out.println(customerToDelete2);
+            adminFacade.deleteCustomer(customerToDelete2);
+            System.out.println("Customer deleted!");
+            System.out.println("Customers left:");
+            adminFacade.getAllCustomers().forEach(System.out::println);
+            System.out.println("Is customer exist: ");
+            adminFacade.getAllCustomersVsCoupons(customerToDelete2.getId()).forEach(System.out::println);
         } catch (invalidAdminException e) {
             System.out.println(e.getMessage());
         }

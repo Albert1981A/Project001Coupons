@@ -14,7 +14,9 @@ import java.util.Map;
 public class CustomersDBDAO implements CustomersDAO {
 
     private static final String QUERY_IS_CUSTOMER_EXISTS = "SELECT * FROM `couponsystem`.`customers` WHERE EXISTS (SELECT * FROM `couponsystem`.`customers` WHERE `email`=? and `password`=?);";
+    private static final String QUERY_IS_CUSTOMER_EXISTS_BY_ID = "SELECT * FROM `couponsystem`.`customers` WHERE EXISTS (SELECT * FROM `couponsystem`.`customers` WHERE (`id`= ?));";
     private static final String QUERY_GET_CUSTOMER_BY_EMAIL_AND_PASSWORD = "SELECT * FROM `couponsystem`.`customers` WHERE `email`=? and `password`=?;";
+    private static final String QUERY_GET_CUSTOMER_BY_EMAIL = "SELECT * FROM `couponsystem`.`customers` WHERE (`email`= ?);";
     private static final String QUERY_INSERT_CUSTOMER = "INSERT INTO `couponsystem`.`customers` (`first_name`, `last_name`, `email`, `password`) VALUES (?, ?, ?, ?);";
     private static final String QUERY_UPDATE_CUSTOMER = "UPDATE `couponsystem`.`customers` SET `first_name` = ?, `last_name` = ?, `email` = ?, `password` = ? WHERE (`id` = ?);";
     private static final String QUERY_DELETE_CUSTOMER = "DELETE FROM `couponsystem`.`customers` WHERE (`id` = ?);";
@@ -64,6 +66,21 @@ public class CustomersDBDAO implements CustomersDAO {
 //            // Step 5
 //            ConnectionPool.getInstance().returnConnection(connection);
 //        }
+        return false;
+    }
+
+    @Override
+    public boolean isCustomerExistsById(int id) {
+        Map<Integer, Object> map = new HashMap<>();
+        map.put(1, id);
+        ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_IS_CUSTOMER_EXISTS_BY_ID, map);
+        try {
+            if (resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return false;
     }
 
@@ -256,7 +273,7 @@ public class CustomersDBDAO implements CustomersDAO {
 //    }
 
     @Override
-    public boolean getSingleCustomerByEmail(String email) {
+    public boolean isCustomerExistsByEmail(String email) {
         Map<Integer, Object> map = new HashMap<>();
         map.put(1, email);
         ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_GET_SINGLE_CUSTOMER_BY_EMAIL, map);
@@ -268,6 +285,25 @@ public class CustomersDBDAO implements CustomersDAO {
             System.out.println(e.getMessage());
         }
         return false;
+    }
+
+    @Override
+    public Customer getSingleCustomerByEmailB(String email) {
+        Customer customer = null;
+        Map<Integer, Object> map = new HashMap<>();
+        map.put(1, email);
+        ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_GET_CUSTOMER_BY_EMAIL, map);
+        try {
+            resultSet.next();
+            int id = resultSet.getInt(1);
+            String firsName = resultSet.getString(2);
+            String lastName = resultSet.getString(3);
+            String password = resultSet.getString(5);
+            customer = new Customer(id, firsName, lastName, email, password);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return customer;
     }
 
     @Override

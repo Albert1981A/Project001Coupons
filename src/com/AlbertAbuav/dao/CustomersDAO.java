@@ -10,6 +10,8 @@ public interface CustomersDAO {
 
     boolean isCustomerExists(String email, String password);
 
+    boolean isCustomerExistsById(int id);
+
     void addCustomer(Customer customer);
 
     void updateCustomer(Customer customer);
@@ -20,7 +22,9 @@ public interface CustomersDAO {
 
     Customer getSingleCustomer(int customerID);
 
-    boolean getSingleCustomerByEmail(String email);
+    boolean isCustomerExistsByEmail(String email);
+
+    Customer getSingleCustomerByEmailB(String email);
 
     Customer getCustomerByEmailAndPassword(String email, String password);
 
