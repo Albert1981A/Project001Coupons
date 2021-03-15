@@ -10,6 +10,7 @@ import com.AlbertAbuav.utils.DateUtils;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CustomerFacade extends ClientFacade {
 
@@ -46,21 +47,15 @@ public class CustomerFacade extends ClientFacade {
      * @param coupon Coupon
      */
     public void addCoupon(Coupon coupon) throws invalidCustomerException {
-        if (coupon == null) {
-            throw new invalidCustomerException("There is no coupon in the system like the coupon you entered");
+        if (Objects.isNull(coupon)) {
+            throw new invalidCustomerException("There is no coupon like you entered!");
         }
         if (coupon.getAmount() == 0) {
-            throw new invalidCustomerException("The coupons of \"" + coupon.getTitle() + "\" are out of stock!");
+            throw new invalidCustomerException("The coupons of id: \"" + coupon.getId() + "\" are out of stock!");
         } else if (coupon.getEndDate().before(DateUtils.javaDateFromLocalDate(LocalDate.now()))) {
-            throw new invalidCustomerException("The coupon \"" + coupon.getTitle() + "\" has expired!");
-        }
-        if (couponsDAO.getAllCustomersCoupons(customerID) != null) {
-            List<CustomersVsCoupons> allCustomerPurchase = couponsDAO.getAllCustomersCoupons(customerID);
-            for (CustomersVsCoupons customerVsCoupon : allCustomerPurchase) {
-                if (coupon.getId() == customerVsCoupon.getCouponID()) {
-                    throw new invalidCustomerException("You already purchase coupon \"" + coupon.getTitle() + "\" cannot purchase the same coupon more than once");
-                }
-            }
+            throw new invalidCustomerException("The coupon id: \"" + coupon.getId() + "\" has expired!");
+        } else if (couponsDAO.isCustomersCouponsExistsByCustomerIdAndCouponId(customerID, coupon.getId())) {
+            throw new invalidCustomerException("You already purchase coupon id: \"" + coupon.getId() + "\". You cannot purchase the same coupon more than once");
         }
         couponsDAO.addCouponPurchase(customerID, coupon.getId());
         coupon.setAmount((coupon.getAmount()) - 1);
@@ -74,16 +69,16 @@ public class CustomerFacade extends ClientFacade {
      * @return List
      */
     public List<Coupon> getAllCustomerCoupons() throws invalidCustomerException {
-        if (couponsDAO.getAllCustomersCoupons(customerID) == null) {
-            throw new invalidCustomerException("There are no coupons in the system!");
-        }
         List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCoupons(customerID);
+        if (purchases.size() == 0) {
+            throw new invalidCustomerException("There are no coupons purchased by the Logged customer!");
+        }
         List<Coupon> couponList = new ArrayList<>();
         for (CustomersVsCoupons purchase : purchases) {
             couponList.add(couponsDAO.getSingleCoupon(purchase.getCouponID()));
         }
         if (couponList.size() == 0) {
-            throw new invalidCustomerException("There are no coupons purchased by this customer!");
+            throw new invalidCustomerException("There are no coupons purchased by the Logged customer!");
         }
         return couponList;
     }

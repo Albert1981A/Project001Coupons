@@ -20,6 +20,7 @@ public class CustomersVsCouponsDBDAO implements CustomersVsCouponsDAO {
     private static final String QUERY_DELETE_CUSTOMERS_VS_COUPONS = "DELETE FROM `couponsystem`.`customers_vs_coupons` WHERE (`customer_id` = ?) and (`coupon_id` = ?);";
     private static final String QUERY_GET_ALL_CUSTOMERS_COUPONS = "SELECT * FROM `couponsystem`.`customers_vs_coupons` WHERE (`customer_id` = ?);";
     private static final String QUERY_GET_ALL_CUSTOMERS_COUPONS_BY_COUPON_ID = "SELECT * FROM `couponsystem`.`customers_vs_coupons` WHERE (`coupon_id` = ?);";
+    private static final String QUERY_GET_ALL_CUSTOMERS_COUPONS_EXISTS_BY_CUSTOMER_ID_AND_COUPON_ID = "SELECT * FROM `couponsystem`.`customers_vs_coupons` WHERE EXISTS (SELECT * FROM `couponsystem`.`customers_vs_coupons` WHERE (`customer_id` = ?) and (`coupon_id` = ?));";
 
     @Override
     public void addCustomersVsCoupons(int customerID, int couponID) {
@@ -144,4 +145,22 @@ public class CustomersVsCouponsDBDAO implements CustomersVsCouponsDAO {
 //        }
         return customersVsCoupons;
     }
+
+    @Override
+    public boolean isCustomersCouponsExistsByCustomerIdAndCouponId(int customerID, int couponID) {
+        Map<Integer, Object> map = new HashMap<>();
+        map.put(1, customerID);
+        map.put(2, couponID);
+        ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_GET_ALL_CUSTOMERS_COUPONS_EXISTS_BY_CUSTOMER_ID_AND_COUPON_ID, map);
+        try {
+            if (resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
+
 }

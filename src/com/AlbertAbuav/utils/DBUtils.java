@@ -57,7 +57,7 @@ public class DBUtils {
                 } else if (value instanceof Double) {
                     statement.setDouble(key, (Double) value);
                 } else if (value instanceof Category) {
-                    statement.setInt(key,(int) value);
+                    statement.setInt(key,((Category) value).ordinal()+1);
                 }
             }
             statement.execute();
@@ -94,7 +94,7 @@ public class DBUtils {
                 } else if (value instanceof Double) {
                     statement.setDouble(key, (Double) value);
                 } else if (value instanceof Category) {
-                    statement.setInt(key,(int) value);
+                    statement.setInt(key, ((Category) value).ordinal()+1);
                 }
             }
             // Step 4

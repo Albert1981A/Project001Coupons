@@ -43,36 +43,11 @@ public class CompanyFacade extends ClientFacade {
         if (Objects.isNull(coupon)) {
             throw new invalidCompanyException("There is no coupon like you entered");
         }
-        if (couponsDAO.isCouponOfSingleCompanyWithSpecificTitleExists(coupon.getCompanyID(), coupon.getTitle())) {
+        if (couponsDAO.isCouponExistsByCompanyIdAndTitle(coupon.getCompanyID(), coupon.getTitle())) {
             throw new invalidCompanyException("Cannot add a coupon with the same title to an existing coupon of the same company!");
         }
         couponsDAO.addCoupon(coupon);
     }
-
-//    public void addCoupon(Coupon coupon) throws invalidCompanyException {
-//        if (Objects.isNull(coupon)) {
-//            throw new invalidCompanyException("There is no coupon like you entered");
-//        }
-//        List<Coupon> dbCoupons = couponsDAO.getAllCoupons();
-//        if (dbCoupons.size() > 0) {
-//            List<Coupon> companyCoupons = new ArrayList<>();
-//            for (Coupon dbCoupon : dbCoupons) {
-//                if (dbCoupon.getCompanyID() == companyID) {
-//                    companyCoupons.add(dbCoupon);
-//                }
-//            }
-//            if (companyCoupons.size() == 0) {
-//                couponsDAO.addCoupon(coupon);
-//                return;
-//            }
-//            for (Coupon coupon1 : companyCoupons) {
-//                if (coupon.getTitle().equals(coupon1.getTitle())) {
-//                    throw new invalidCompanyException("Cannot add a coupon with the same title to an existing coupon of the same company.");
-//                }
-//            }
-//        }
-//        couponsDAO.addCoupon(coupon);
-//    }
 
     /**
      * Update an existing coupon.
@@ -82,35 +57,17 @@ public class CompanyFacade extends ClientFacade {
      * @param coupon Coupon
      */
     public void updateCoupon(Coupon coupon) throws invalidCompanyException {
-        if (coupon == null) {
-            throw new invalidCompanyException("There is no coupon in the system like the coupon you entered");
+        if (Objects.isNull(coupon)) {
+            throw new invalidCompanyException("There is no coupon like you entered!");
         }
-        List<Coupon> companyCoupons = getAllCompanyCoupons();
-        Coupon couponToCompare = null;
-        for (Coupon coupon1 : companyCoupons) {
-            if (coupon1.getTitle().equals(coupon.getTitle())) {
-                couponToCompare = coupon1;
+        if (couponsDAO.isCouponExistsByTitle(coupon.getTitle())) {
+            Coupon toCompare = couponsDAO.getCouponByTitle(coupon.getTitle());
+            if (toCompare.getCompanyID() != coupon.getCompanyID()) {
+                throw new invalidCompanyException("The \"company id\" cannot be updated");
             }
-        }
-        if (couponToCompare == null) {
-            for (Coupon coupon2 : companyCoupons) {
-                if (coupon2.getId() == coupon.getId()) {
-                    if (coupon2.getCompanyID() == coupon.getCompanyID()) {
-                        couponsDAO.updateCoupon(coupon);
-                        return;
-                    } else {
-                        throw new invalidCompanyException("The \"coupon id\" or the \"company id\" cannot be updated");
-                    }
-                } else if (coupon2.getCompanyID() != coupon.getCompanyID()) {
-                    throw new invalidCompanyException("The \"coupon id\" or the \"company id\" cannot be updated");
-                }
+            if (toCompare.getId() != coupon.getId()) {
+                throw new invalidCompanyException("The \"coupon id\" cannot be updated");
             }
-        } else if (couponToCompare.getId() == coupon.getId()) {
-            if (couponToCompare.getCompanyID() != coupon.getCompanyID()) {
-                throw new invalidCompanyException("The \"coupon id\" or the \"company id\" cannot be updated");
-            }
-        } else if (couponToCompare.getId() != coupon.getId()) {
-            throw new invalidCompanyException("The \"coupon id\" or the \"company id\" cannot be updated");
         }
         couponsDAO.updateCoupon(coupon);
     }
@@ -122,17 +79,20 @@ public class CompanyFacade extends ClientFacade {
      * @param coupon Coupon
      */
     public void deleteCoupon(Coupon coupon) throws invalidCompanyException {
-        if (coupon == null) {
-            throw new invalidCompanyException("There is no coupon in the system like the coupon you entered");
+        if (Objects.isNull(coupon)) {
+            throw new invalidCompanyException("There is no coupon like you entered");
         }
-        if (couponsDAO.getAllCustomersCouponsByCouponId(coupon.getId()) == null) {
-            throw new invalidCompanyException("There are no coupons in the system!");
+        if (!couponsDAO.isCouponExistsByCouponIdAndCompanyId(coupon.getId(), coupon.getCompanyID())) {
+            throw new invalidCompanyException("There is no coupon \"id-" + coupon.getId() + "\" in the system!");
+        } else if (coupon.getCompanyID() != companyID) {
+            throw new invalidCompanyException("you can not delete other companies coupons!");
         }
         List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCouponsByCouponId(coupon.getId());
+        if (purchases.size() == 0) {
+            throw new invalidCompanyException("There are no coupons in the system!");
+        }
         for (CustomersVsCoupons purchase : purchases) {
-            if (purchase.getCouponID() == coupon.getId()) {
-                couponsDAO.deleteCouponPurchase(purchase.getCustomerID(), purchase.getCouponID());
-            }
+            couponsDAO.deleteCouponPurchase(purchase.getCustomerID(), purchase.getCouponID());
         }
         couponsDAO.deleteCoupon(coupon.getId());
     }
@@ -151,23 +111,6 @@ public class CompanyFacade extends ClientFacade {
         return companyCoupons;
     }
 
-//    public List<Coupon> getAllCompanyCoupons() throws invalidCompanyException {
-//        if (couponsDAO.getAllCoupons() == null) {
-//            throw new invalidCompanyException("No coupons found in system");
-//        }
-//        List<Coupon> dbCoupons = couponsDAO.getAllCoupons();
-//        List<Coupon> companyCoupons = new ArrayList<>();
-//        for (Coupon dbCoupon : dbCoupons) {
-//            if (dbCoupon.getCompanyID() == companyID) {
-//                companyCoupons.add(dbCoupon);
-//            }
-//        }
-//        if (companyCoupons.size() == 0) {
-//            throw new invalidCompanyException("No coupons of the logged company: \"" + companiesDAO.getSingleCompany(companyID).getName() + "\" were found in system");
-//        }
-//        return companyCoupons;
-//    }
-
     /**
      * Get all coupons from a specific category of the company.
      * That means, only coupons from a specific category of the company that made the login.
@@ -176,16 +119,10 @@ public class CompanyFacade extends ClientFacade {
      * @return List
      */
     public List<Coupon> getAllCompanyCouponsOfSpecificCategory(Category category) throws invalidCompanyException {
-        if (getAllCompanyCoupons() == null) {
+        if (!couponsDAO.isCouponsExistsByCompanyId(companyID)) {
             throw new invalidCompanyException("The company don't have any coupons!");
         }
-        List<Coupon> companyCoupons = getAllCompanyCoupons();
-        List<Coupon> companyCouponsByCategory = new ArrayList<>();
-        for (Coupon coupon3 : companyCoupons) {
-            if (coupon3.getCategory().equals(category)) {
-                companyCouponsByCategory.add(coupon3);
-            }
-        }
+        List<Coupon> companyCouponsByCategory = couponsDAO.getAllCompanyCouponsOfSpecificCategory(companyID, category);
         if (companyCouponsByCategory.size() == 0) {
             throw new invalidCompanyException("The company don't have any coupons of the category you entered!");
         }
@@ -200,20 +137,14 @@ public class CompanyFacade extends ClientFacade {
      * @return List
      */
     public List<Coupon> getAllCompanyCouponsUpToMaxPrice(double maxPrice) throws invalidCompanyException {
-        if (getAllCompanyCoupons() == null) {
+        if (!couponsDAO.isCouponsExistsByCompanyId(companyID)) {
             throw new invalidCompanyException("The company don't have any coupons!");
         }
-        List<Coupon> companyCoupons = getAllCompanyCoupons();
-        List<Coupon> companyCouponsByMax = new ArrayList<>();
-        for (Coupon coupon4 : companyCoupons) {
-            if (coupon4.getPrice() <= maxPrice) {
-                companyCouponsByMax.add(coupon4);
-            }
+        List<Coupon> companyCouponsByCategory = couponsDAO.getAllCompanyCouponsUpToMaxPrice(companyID, maxPrice);
+        if (companyCouponsByCategory.size() == 0) {
+            throw new invalidCompanyException("The company don't have any coupons of the category you entered!");
         }
-        if (companyCouponsByMax.size() == 0) {
-            throw new invalidCompanyException("The company don't have any coupons up to the price you entered!");
-        }
-        return companyCouponsByMax;
+        return companyCouponsByCategory;
     }
 
     /**
@@ -224,9 +155,7 @@ public class CompanyFacade extends ClientFacade {
      */
     public Company getTheLoggedCompanyDetails() throws invalidCompanyException {
         Company loggedCompany = companiesDAO.getSingleCompany(companyID);
-        System.out.println(loggedCompany);
         List<Coupon> companyCoupons = getAllCompanyCoupons();
-        System.out.println(companyCoupons);
         if (companyCoupons.size() == 0) {
             return loggedCompany;
         } else {
@@ -234,17 +163,6 @@ public class CompanyFacade extends ClientFacade {
         }
         return loggedCompany;
     }
-
-//    public Company getTheLoggedCompanyDetails() throws invalidCompanyException {
-//        Company loggedCompany = companiesDAO.getSingleCompany(companyID);
-//        List<Coupon> companyCoupons = couponsDAO.getAllCouponsOfSingleCompany(companyID);
-//        if (companyCoupons.size() == 0) {
-//            return loggedCompany;
-//        }
-//        loggedCompany.setCoupons(companyCoupons);
-//        System.out.println(loggedCompany.getCoupons());
-//        return loggedCompany;
-//    }
 
     /**
      * The method return a single coupon of the logged company by id.
@@ -255,7 +173,7 @@ public class CompanyFacade extends ClientFacade {
     public Coupon getSingleCoupon(int id) throws invalidCompanyException {
         Coupon singleCoupon = couponsDAO.getSingleCoupon(id);
         if (Objects.isNull(singleCoupon)) {
-            throw new invalidCompanyException("There are no coupon for the couponID you entered!");
+            throw new invalidCompanyException("There are no coupon for the couponID: \"" + id + "\" you entered!");
         }
         return singleCoupon;
     }
@@ -267,10 +185,13 @@ public class CompanyFacade extends ClientFacade {
      * @return List
      */
     public List<Customer> getAllCompanyCustomersOfASingleCouponByCouponId(int couponID) throws invalidCompanyException {
-        if (couponsDAO.getAllCustomersCouponsByCouponId(couponID) == null) {
-            throw new invalidCompanyException("There are no customers for the couponID you entered!");
+        if (couponID <= 0) {
+            throw new invalidCompanyException("There is no couponID Like you entered!");
         }
         List<CustomersVsCoupons> companyCouponCustomers = couponsDAO.getAllCustomersCouponsByCouponId(couponID);
+        if (companyCouponCustomers.size() == 0) {
+            throw new invalidCompanyException("There are no customers for the couponID you entered!");
+        }
         List<Customer> customersOfCoupon = new ArrayList<>();
         Customer temp;
         for (CustomersVsCoupons vsCoupons : companyCouponCustomers) {

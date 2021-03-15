@@ -14,4 +14,6 @@ public interface CustomersVsCouponsDAO {
 
     List<CustomersVsCoupons> getAllCustomersCouponsByCouponId(int couponID);
 
+    boolean isCustomersCouponsExistsByCustomerIdAndCouponId(int customerID, int couponID);
+
 }
