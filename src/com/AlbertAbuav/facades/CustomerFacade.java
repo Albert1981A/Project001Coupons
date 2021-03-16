@@ -5,6 +5,7 @@ import com.AlbertAbuav.beans.Coupon;
 import com.AlbertAbuav.beans.Customer;
 import com.AlbertAbuav.beans.CustomersVsCoupons;
 import com.AlbertAbuav.exceptions.invalidCustomerException;
+import com.AlbertAbuav.utils.DBUtils;
 import com.AlbertAbuav.utils.DateUtils;
 
 import java.time.LocalDate;
@@ -69,18 +70,7 @@ public class CustomerFacade extends ClientFacade {
      * @return List
      */
     public List<Coupon> getAllCustomerCoupons() throws invalidCustomerException {
-        List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCoupons(customerID);
-        if (purchases.size() == 0) {
-            throw new invalidCustomerException("There are no coupons purchased by the Logged customer!");
-        }
-        List<Coupon> couponList = new ArrayList<>();
-        for (CustomersVsCoupons purchase : purchases) {
-            couponList.add(couponsDAO.getSingleCoupon(purchase.getCouponID()));
-        }
-        if (couponList.size() == 0) {
-            throw new invalidCustomerException("There are no coupons purchased by the Logged customer!");
-        }
-        return couponList;
+        return DBUtils.getAllCustomerCouponsGeneric(customerID);
     }
 
     /**
@@ -91,38 +81,8 @@ public class CustomerFacade extends ClientFacade {
      * @return List
      */
     public List<Coupon> getAllCustomerCouponsOfSpecificCategory(Category category) throws invalidCustomerException {
-        List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCoupons(customerID);
-        if (purchases.size() == 0) {
-            throw new invalidCustomerException("There are no coupons purchased by the Logged customer!");
-        }
-        List<Coupon> couponList = new ArrayList<>();
-        for (CustomersVsCoupons purchase : purchases) {
-            if (couponsDAO.isCouponExistsByCouponIdAndCategory(purchase.getCouponID(), category)) {
-                couponList.add(couponsDAO.getSingleCouponByCouponIdAndCategory(purchase.getCouponID(), category));
-            }
-        }
-        if (couponList.size() == 0) {
-            throw new invalidCustomerException("There are no coupons purchased by the Logged customer!");
-        }
-        return couponList;
+        return DBUtils.getAllCustomerCouponsGeneric(customerID, category);
     }
-
-//    public List<Coupon> getAllCustomerCouponsOfSpecificCategory(Category category) throws invalidCustomerException {
-//        if (getAllCustomerCoupons() == null) {
-//            throw new invalidCustomerException("There are no customer coupons!");
-//        }
-//        List<Coupon> couponList = getAllCustomerCoupons();
-//        List<Coupon> categoryList = new ArrayList<>();
-//        for (Coupon coupon : couponList) {
-//            if (coupon.getCategory().equals(category)) {
-//                categoryList.add(coupon);
-//            }
-//        }
-//        if (categoryList.size() == 0) {
-//            throw new invalidCustomerException("There are no customer coupons of the specific category you entered!");
-//        }
-//        return categoryList;
-//    }
 
     /**
      * Get all coupons up to the maximum price set by the customer purchased.
@@ -132,20 +92,7 @@ public class CustomerFacade extends ClientFacade {
      * @return List
      */
     public List<Coupon> getAllCustomerCouponsUpToMaxPrice(double maxPrice) throws invalidCustomerException {
-        List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCoupons(customerID);
-        if (purchases.size() == 0) {
-            throw new invalidCustomerException("There are no coupons purchased by the Logged customer!");
-        }
-        List<Coupon> couponList = new ArrayList<>();
-        for (CustomersVsCoupons purchase : purchases) {
-            if (couponsDAO.isCouponExistsByCouponIdAndMaxPrice(purchase.getCouponID(), maxPrice)) {
-                couponList.add(couponsDAO.getSingleCoupon(purchase.getCouponID()));
-            }
-        }
-        if (couponList.size() == 0) {
-            throw new invalidCustomerException("There are no coupons purchased by the Logged customer!");
-        }
-        return couponList;
+        return DBUtils.getAllCustomerCouponsGeneric(customerID, maxPrice);
     }
 
     /**

@@ -150,8 +150,7 @@ public class TestCoupons {
 
         couponsDAO.addCouponPurchase(1, 1);
         couponsDAO.addCouponPurchase(1, 3);
-        System.out.println("Purchase a coupon by customer: " + customersDAO.getSingleCustomer(1));
-        System.out.println("Purchase a coupon by customer: " + customersDAO.getSingleCustomer(3));
+        couponsDAO.getAllCustomersCoupons(1).forEach(System.out::println);
         System.out.println();
 
         System.out.println("---------------- QUERY_GET_ALL_CUSTOMER_COUPON_PURCHASE------------------");

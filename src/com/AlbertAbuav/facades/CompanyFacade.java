@@ -2,6 +2,7 @@ package com.AlbertAbuav.facades;
 
 import com.AlbertAbuav.beans.*;
 import com.AlbertAbuav.exceptions.invalidCompanyException;
+import com.AlbertAbuav.utils.DBUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,11 +105,7 @@ public class CompanyFacade extends ClientFacade {
      * @return List
      */
     public List<Coupon> getAllCompanyCoupons() throws invalidCompanyException {
-        List<Coupon> companyCoupons = couponsDAO.getAllCouponsOfSingleCompany(companyID);
-        if (companyCoupons.size() == 0) {
-            throw new invalidCompanyException("No coupons found in system");
-        }
-        return companyCoupons;
+        return DBUtils.getAllCompanyCouponsGeneric(companyID);
     }
 
     /**
@@ -119,14 +116,7 @@ public class CompanyFacade extends ClientFacade {
      * @return List
      */
     public List<Coupon> getAllCompanyCouponsOfSpecificCategory(Category category) throws invalidCompanyException {
-        if (!couponsDAO.isCouponsExistsByCompanyId(companyID)) {
-            throw new invalidCompanyException("The company don't have any coupons!");
-        }
-        List<Coupon> companyCouponsByCategory = couponsDAO.getAllCompanyCouponsOfSpecificCategory(companyID, category);
-        if (companyCouponsByCategory.size() == 0) {
-            throw new invalidCompanyException("The company don't have any coupons of the category you entered!");
-        }
-        return companyCouponsByCategory;
+        return DBUtils.getAllCompanyCouponsGeneric(companyID, category);
     }
 
     /**
@@ -137,14 +127,7 @@ public class CompanyFacade extends ClientFacade {
      * @return List
      */
     public List<Coupon> getAllCompanyCouponsUpToMaxPrice(double maxPrice) throws invalidCompanyException {
-        if (!couponsDAO.isCouponsExistsByCompanyId(companyID)) {
-            throw new invalidCompanyException("The company don't have any coupons!");
-        }
-        List<Coupon> companyCouponsByCategory = couponsDAO.getAllCompanyCouponsUpToMaxPrice(companyID, maxPrice);
-        if (companyCouponsByCategory.size() == 0) {
-            throw new invalidCompanyException("The company don't have any coupons of the category you entered!");
-        }
-        return companyCouponsByCategory;
+        return DBUtils.getAllCompanyCouponsGeneric(companyID, maxPrice);
     }
 
     /**

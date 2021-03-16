@@ -33,7 +33,7 @@ public class CouponsDBDAO implements CouponsDAO {
     private static final String QUERY_GET_SINGLE_COUPON_BY_COUPON_ID_AND_CATEGORY = "SELECT * FROM `couponsystem`.`coupons` WHERE (`id` = ?) AND (`category_id` = ?);";
     private static final String QUERY_GET_COUPON_BY_TITLE = "SELECT * FROM `couponsystem`.`coupons` WHERE (`title` = ?);";
 
-    CustomersVsCouponsDAO customersVsCouponsDAO = new CustomersVsCouponsDBDAO();
+    private CustomersVsCouponsDAO customersVsCouponsDAO = new CustomersVsCouponsDBDAO();
 
     /**
      * To perform an operation from the code to the database there are five steps.

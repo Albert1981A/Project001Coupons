@@ -507,11 +507,21 @@ public class TestFacade {
         System.out.println("The system will choose to change the object according to its - id!");
         System.out.println();
 
+        Colors.setCyanBoldPrint("COMPANIES FACADE | -------------------------- Get all coupons of the logged company -----------------------");
+
+        try {
+            System.out.println("Getting all the coupons of company id: \"" + companyFacade1.getTheLoggedCompanyDetails().getId() + "\"");
+            companyFacade1.getAllCompanyCoupons().forEach(System.out::println);
+        } catch (invalidCompanyException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+
         Colors.setCyanBoldPrint("COMPANIES FACADE | ---------------- Get all coupons from a specific category of the company ---------------");
 
         try {
             Category categoryToCheck = companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(1).getCategory();
-            System.out.println("The category the will be checked:\n" + categoryToCheck);
+            System.out.println("The category that will be checked:\n" + categoryToCheck);
             System.out.println("The company that will be checked:\n" + companyFacade1.getTheLoggedCompanyDetails());
             System.out.println("Result:");
             companyFacade1.getAllCompanyCouponsOfSpecificCategory(categoryToCheck).forEach(System.out::println);
@@ -689,10 +699,10 @@ public class TestFacade {
         Colors.setPurpleBoldPrint("CUSTOMERS FACADE | ------------------------ Get all coupons up to the maximum price -----------------------");
 
         try {
-            System.out.println("High attempt:");
+            System.out.println("High attempt: max price = 95");
             customerFacade1.getAllCustomerCouponsUpToMaxPrice(95).forEach(System.out::println);
-            System.out.println("Low attempt:");
-            customerFacade1.getAllCustomerCouponsUpToMaxPrice(62).forEach(System.out::println);
+            System.out.println("Low attempt: max price = 65");
+            customerFacade1.getAllCustomerCouponsUpToMaxPrice(65).forEach(System.out::println);
         } catch (invalidCustomerException e) {
             System.out.println(e.getMessage());
         }

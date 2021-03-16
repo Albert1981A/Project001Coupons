@@ -1,12 +1,18 @@
 package com.AlbertAbuav.utils;
 
 import com.AlbertAbuav.beans.Category;
+import com.AlbertAbuav.beans.Coupon;
+import com.AlbertAbuav.beans.CustomersVsCoupons;
+import com.AlbertAbuav.dao.CouponsDAO;
 import com.AlbertAbuav.db.ConnectionPool;
+import com.AlbertAbuav.dbdao.CouponsDBDAO;
+import com.AlbertAbuav.exceptions.invalidCompanyException;
+import com.AlbertAbuav.exceptions.invalidCustomerException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 public class DBUtils {
     /**
@@ -18,6 +24,8 @@ public class DBUtils {
      * Step 5 - Returning the connection to the ConnectionPool.
      * @param sql String
      */
+    private static CouponsDAO couponsDAO = new CouponsDBDAO();
+
     public static void runQuery(String sql) {
         Connection connection = null;
         try {
@@ -125,5 +133,66 @@ public class DBUtils {
             ConnectionPool.getInstance().returnConnection(connection);
         }
         return resultSet;
+    }
+
+    public static List<Coupon> getAllCustomerCouponsGeneric(int customerID, Object object) throws invalidCustomerException {
+        List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCoupons(customerID);
+        if (purchases.size() == 0) {
+            throw new invalidCustomerException("There are no coupons purchased by the Logged customer!");
+        }
+        List<Coupon> couponList = new ArrayList<>();
+        if (object instanceof Double) {
+            for (CustomersVsCoupons purchase : purchases) {
+                if (couponsDAO.isCouponExistsByCouponIdAndMaxPrice(purchase.getCouponID(), (double)object)) {
+                    couponList.add(couponsDAO.getSingleCoupon(purchase.getCouponID()));
+                }
+            }
+        } else if (object instanceof Category) {
+            for (CustomersVsCoupons purchase : purchases) {
+                if (couponsDAO.isCouponExistsByCouponIdAndCategory(purchase.getCouponID(), (Category)object)) {
+                    couponList.add(couponsDAO.getSingleCoupon(purchase.getCouponID()));
+                }
+            }
+        }
+        if (couponList.size() == 0) {
+            throw new invalidCustomerException("No coupons were found!");
+        }
+        return couponList;
+    }
+
+    public static List<Coupon> getAllCustomerCouponsGeneric(int customerID) throws invalidCustomerException {
+        List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCoupons(customerID);
+        if (purchases.size() == 0) {
+            throw new invalidCustomerException("There are no coupons purchased by the Logged customer!");
+        }
+        List<Coupon> couponList = new ArrayList<>();
+        for (CustomersVsCoupons purchase : purchases) {
+            couponList.add(couponsDAO.getSingleCoupon(purchase.getCouponID()));
+        }
+        if (couponList.size() == 0) {
+            throw new invalidCustomerException("No coupons were found!");
+        }
+        return couponList;
+    }
+
+    public static List<Coupon> getAllCompanyCouponsGeneric(int companyID, Object object) throws invalidCompanyException {
+        List<Coupon> companyCoupons = new ArrayList<>();
+        if (object instanceof Category) {
+            companyCoupons = couponsDAO.getAllCompanyCouponsOfSpecificCategory(companyID, (Category) object);
+        } else if (object instanceof Double) {
+            companyCoupons = couponsDAO.getAllCompanyCouponsUpToMaxPrice(companyID, (double) object);
+        }
+        if (companyCoupons.size() == 0) {
+            throw new invalidCompanyException("No coupons found in system!");
+        }
+        return companyCoupons;
+    }
+
+    public static List<Coupon> getAllCompanyCouponsGeneric(int companyID) throws invalidCompanyException {
+        List<Coupon> companyCoupons = couponsDAO.getAllCouponsOfSingleCompany(companyID);
+        if (companyCoupons.size() == 0) {
+            throw new invalidCompanyException("No coupons found in system!");
+        }
+        return companyCoupons;
     }
 }
