@@ -16,4 +16,6 @@ public interface CustomersVsCouponsDAO {
 
     boolean isCustomersCouponsExistsByCustomerIdAndCouponId(int customerID, int couponID);
 
+    boolean isCustomersCouponsExistsByCouponId(int couponID);
+
 }

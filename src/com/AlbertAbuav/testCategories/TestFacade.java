@@ -18,8 +18,10 @@ import com.AlbertAbuav.login.ClientType;
 import com.AlbertAbuav.login.LoginManager;
 import com.AlbertAbuav.tasks.DailyExpiredCoupons;
 import com.AlbertAbuav.utils.ArtUtils;
+import com.AlbertAbuav.utils.Colors;
 import com.AlbertAbuav.utils.DateUtils;
 
+import java.awt.*;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -27,7 +29,8 @@ public class TestFacade {
 
     public static void testAll() {
 
-        System.out.println("START");
+        Colors.setRedBoldBrightPrint("START");
+        Colors.separation();
 
         /**
          * Step 1 - Setup to MySql Driver using Reflection API
@@ -54,10 +57,10 @@ public class TestFacade {
         DatabaseManager.createTableCoupons();
         DatabaseManager.createTableCustomersVsCoupons();
 
-        System.out.println(ArtUtils.CATEGORIES_DAO);
-        System.out.println();
+        Colors.setYellowBoldPrint(ArtUtils.CATEGORIES_DAO);
 
-        System.out.println("----------------------- QUERY GET ALL CATEGORIES ------------------------");
+        Colors.setYellowBoldPrint("CATEGORIES DAO | -------------------------------- QUERY GET ALL CATEGORIES ------------------------------");
+
         CategoriesDAO categoriesDAO = new CategoriesDBDAO();
         categoriesDAO.addCategories();
         System.out.println("Categories were added!");
@@ -74,11 +77,11 @@ public class TestFacade {
         /**
          * Login to Admin Facade
          */
-        System.out.println(ArtUtils.ADMIN_FACADE);
+        Colors.setGreenBoldPrint(ArtUtils.ADMIN_FACADE);
 
         AdminFacade adminFacade = null;
 
-        System.out.println("------------------ Attempting to Connect to Admin with false parameters ----------------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | ------------------ Attempting to Connect to Admin with false parameters ----------------");
         try {
             adminFacade = (AdminFacade) loginManager.login("false@false.com", "false", ClientType.ADMINISTRATOR);
         } catch (invalidCompanyException | invalidCustomerException | invalidAdminException e) {
@@ -86,7 +89,7 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("------------------------------ Checking Connection to Admin ----------------------------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | ------------------------------ Checking Connection to Admin ----------------------------");
         try {
             adminFacade = (AdminFacade) loginManager.login("admin@admin.com", "admin", ClientType.ADMINISTRATOR);
         } catch (invalidCompanyException | invalidCustomerException | invalidAdminException e) {
@@ -96,7 +99,7 @@ public class TestFacade {
         System.out.println(adminFacade);
         System.out.println();
 
-        System.out.println("---------- Attempt to get all companies when there is no companies in system -----------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | ---------- Attempt to get all companies when there is no companies in system -----------");
         try {
             adminFacade.getAllCompanies().forEach(System.out::println);
         } catch (invalidAdminException e) {
@@ -104,7 +107,7 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("--------- Attempt to get a single company when there is no companies in system ---------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | --------- Attempt to get a single company when there is no companies in system ---------");
         try {
             adminFacade.getSingleCompany(1);
         } catch (invalidAdminException e) {
@@ -112,7 +115,7 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("---------------------------------- Adding new companies --------------------------------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | ---------------------------------- Adding new companies --------------------------------");
 
         try {
             for (int i = 0; i < 10; i++) {
@@ -124,7 +127,7 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("--------------------- Attempt to add a company with an existing name -------------------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | --------------------- Attempt to add a company with an existing name -------------------");
         Company temp = null;
         try {
             temp = adminFacade.getSingleCompany(1);
@@ -135,7 +138,7 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("--------------------- Attempt to add a company with an existing email ------------------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | --------------------- Attempt to add a company with an existing email ------------------");
 
         try {
             Company companyToAdd2 = new Company("name", temp.getEmail(), "22222");
@@ -145,7 +148,7 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("------------------------------------- Update a Company ---------------------------------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | ---------------------------------- Update companies email ------------------------------");
 
         try {
             Company companyToUpdate = adminFacade.getSingleCompany(2);
@@ -159,7 +162,7 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("----------------------------- Attempt to update a Company's id -------------------------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | ----------------------------- Attempt to update a Company's id -------------------------");
 
         try {
             Company companyToUpdate2 = adminFacade.getSingleCompany(3);
@@ -171,7 +174,7 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("----------------------------- Attempt to update a Company's Name -------------------------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | ----------------------------- Attempt to update a Company's Name -------------------------");
 
         try {
             Company companyToUpdate3 = adminFacade.getSingleCompany(4);
@@ -185,7 +188,7 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("------------------------ Attempt to update a Company's Name and id ---------------------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | ------------------------ Attempt to update a Company's Name and id ---------------------");
 
         try {
             Company companyToUpdate3b = adminFacade.getSingleCompany(4);
@@ -201,7 +204,7 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("--------- Attempt to update a company whose name does not exist in the system ----------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | --------- Attempt to update a company whose name does not exist in the system ----------");
 
         try {
             Company companyToUpdate4 = adminFacade.getSingleCompany(5);
@@ -213,7 +216,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("---------- Attempt to get all customers when there is no customers in system -----------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | ---------- Attempt to get all customers when there is no customers in system -----------");
+
         try {
             adminFacade.getAllCustomers().forEach(System.out::println);
         } catch (invalidAdminException e) {
@@ -221,7 +225,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("------- Attempt to get a single customers when there is no customers in system ---------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | ------- Attempt to get a single customers when there is no customers in system ---------");
+
         try {
             System.out.println(adminFacade.getSingleCustomer(1));
         } catch (invalidAdminException e) {
@@ -229,7 +234,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("------------------------------------ Adding Customers ----------------------------------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | ------------------------------------ Adding Customers ----------------------------------");
+
         try {
             for (int i = 0; i < 10; i++) {
                 adminFacade.addCustomer(new Customer());
@@ -240,7 +246,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("--------------------- Attempt to add a customer with an existing email -----------------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | --------------------- Attempt to add a customer with an existing email -----------------");
+
         try {
             Customer temp1 = new Customer("firstName", "lastName", adminFacade.getSingleCustomer(1).getEmail(), "11111");
             adminFacade.addCustomer(temp1);
@@ -249,7 +256,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("------------------------------- Update a customers first name --------------------------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | ------------------------------- Update a customers first name --------------------------");
+
         Customer toUpdate = null;
         try {
             toUpdate = adminFacade.getSingleCustomer(1);
@@ -263,7 +271,7 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("------------------------------ Attempt to update a customer id -------------------------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | ------------------------------ Attempt to update a customer id -------------------------");
 
         try {
             Customer toUpdate2 = adminFacade.getSingleCustomer(4);
@@ -275,7 +283,7 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("------------------------- Attempt to update a customer email and id --------------------");
+        Colors.setGreenBoldPrint("ADMIN FACADE | ------------------------- Attempt to update a customer email and id --------------------");
 
         try {
             Customer toUpdate1 = adminFacade.getSingleCustomer(2);
@@ -295,7 +303,7 @@ public class TestFacade {
         /**
          * Login to Company Facade
          */
-        System.out.println(ArtUtils.COMPANIES_FACADE);
+        Colors.setCyanBoldPrint(ArtUtils.COMPANIES_FACADE);
 
         Company loggedCompany1 = null;
         Company loggedCompany2 = null;
@@ -314,7 +322,8 @@ public class TestFacade {
         CompanyFacade companyFacade2 = null;
         CompanyFacade companyFacade3 = null;
 
-        System.out.println("---------------- Attempting to Connect to a company with false parameters --------------");
+        Colors.setCyanBoldPrint("COMPANIES FACADE | ---------------- Attempting to Connect to a company with false parameters --------------");
+
         try {
             companyFacade1 = (CompanyFacade) loginManager.login("false@false.com", "false", ClientType.COMPANY);
         } catch (invalidCompanyException | invalidCustomerException | invalidAdminException e) {
@@ -322,7 +331,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("----------------------------- Checking Connection to Company ---------------------------");
+        Colors.setCyanBoldPrint("COMPANIES FACADE | ----------------------------- Checking Connection to Company ---------------------------");
+
         try {
             companyFacade1 = (CompanyFacade) loginManager.login(loggedCompany1.getEmail(), loggedCompany1.getPassword(), ClientType.COMPANY);
             companyFacade2 = (CompanyFacade) loginManager.login(loggedCompany2.getEmail(), loggedCompany2.getPassword(), ClientType.COMPANY);
@@ -337,7 +347,8 @@ public class TestFacade {
         System.out.println(companyFacade3);
         System.out.println();
 
-        System.out.println("------ Trying to get all companies coupons when there is no coupons in the system ------");
+        Colors.setCyanBoldPrint("COMPANIES FACADE | ------ Trying to get all companies coupons when there is no coupons in the system ------");
+
         try {
             companyFacade1.getAllCompanyCoupons().forEach(System.out::println);
         } catch (invalidCompanyException e) {
@@ -345,7 +356,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("---- Trying to get a single companies coupon when there is no coupons to the company ---");
+        Colors.setCyanBoldPrint("COMPANIES FACADE | ---- Trying to get a single companies coupon when there is no coupons to the company ---");
+
         try {
             System.out.println(companyFacade1.getSingleCoupon(1));
         } catch (invalidCompanyException e) {
@@ -353,10 +365,9 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("---------------------------- Adding new coupon to the company --------------------------");
+        Colors.setCyanBoldPrint("COMPANIES FACADE | ---------------------------- Adding new coupon to the company --------------------------");
 
-        System.out.println("Coupons were added:");
-        System.out.println("-------------------");
+        Colors.setCyanUnderlinedPrint("Coupons were added:");
 
         try {
             for (int i = 0; i < 7; i++) {
@@ -381,7 +392,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("-- Attempt to Add coupon with the same title to an existing coupon of the same company -");
+        Colors.setCyanBoldPrint("COMPANIES FACADE | -- Attempt to Add coupon with the same title to an existing coupon of the same company -");
+
         Coupon toAdd = new Coupon(loggedCompany1.getId());
         try {
             toAdd.setTitle(companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(0).getTitle());
@@ -394,7 +406,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("-- Attempt to Add coupon with the same title to an existing coupon of another company --");
+        Colors.setCyanBoldPrint("COMPANIES FACADE | -- Attempt to Add coupon with the same title to an existing coupon of another company --");
+
         Coupon toAdd2 = new Coupon(loggedCompany1.getId());
         try {
             toAdd2.setTitle(companyFacade2.getTheLoggedCompanyDetails().getCoupons().get(2).getTitle());
@@ -407,7 +420,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("---------------------------- Update a company coupon start date ------------------------");
+        Colors.setCyanBoldPrint("COMPANIES FACADE | ---------------------------- Update a company coupon start date ------------------------");
+
         try {
             Coupon couponToUpdateD = companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(1);
             System.out.println("Trying to update the \"startDate\" of coupon id-2 to be \"current date\": ");
@@ -420,7 +434,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("---------------------------- Update a company coupon amount ------------------------");
+        Colors.setCyanBoldPrint("COMPANIES FACADE | ------------------------------ Update a company coupon amount -------------------------");
+
         try {
             Coupon couponToUpdate = companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(1);
             System.out.println("Trying to update the \"amount\" of coupon id-2 to be \"23\": ");
@@ -433,7 +448,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("------------------------ Attempt to Update a company coupons title ---------------------");
+        Colors.setCyanBoldPrint("COMPANIES FACADE | ------------------------ Attempt to Update a company coupons title ---------------------");
+
         try {
             Coupon couponToUpdate2 = companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(2);
             System.out.println("Trying to update the \"title\" of coupon id 3: ");
@@ -446,7 +462,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("-------------------------- Attempt to Update a company coupons id ----------------------");
+        Colors.setCyanBoldPrint("COMPANIES FACADE | -------------------------- Attempt to Update a company coupons id ----------------------");
+
         try {
             Coupon couponToUpdate3 = companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(0);
             System.out.println("Trying to update the \"id\" of coupon id-1 to coupon id-7: ");
@@ -460,7 +477,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("-------------------------- Attempt to Update a coupons company id ----------------------");
+        Colors.setCyanBoldPrint("COMPANIES FACADE | -------------------------- Attempt to Update a coupons company id ----------------------");
+
         try {
             Coupon couponToUpdate4 = companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(0);
             System.out.println("Trying to update the \"company id\" of coupon id 1: ");
@@ -473,7 +491,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("------------------------- Attempt to Update a coupon id and Title ----------------------");
+        Colors.setCyanBoldPrint("COMPANIES FACADE | ------------------------- Attempt to Update a coupon id and Title ----------------------");
+
         try {
             Coupon couponToUpdate5 = companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(0);
             System.out.println("Trying to update the \"id\" of coupon id 1: ");
@@ -488,7 +507,8 @@ public class TestFacade {
         System.out.println("The system will choose to change the object according to its - id!");
         System.out.println();
 
-        System.out.println("---------------- Get all coupons from a specific category of the company ---------------");
+        Colors.setCyanBoldPrint("COMPANIES FACADE | ---------------- Get all coupons from a specific category of the company ---------------");
+
         try {
             Category categoryToCheck = companyFacade1.getTheLoggedCompanyDetails().getCoupons().get(1).getCategory();
             System.out.println("The category the will be checked:\n" + categoryToCheck);
@@ -500,7 +520,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("-------------- Get all coupons up to the maximum price set by the company --------------");
+        Colors.setCyanBoldPrint("COMPANIES FACADE | -------------- Get all coupons up to the maximum price set by the company --------------");
+
         try {
             System.out.println("The max price is : 75");
             companyFacade1.getAllCompanyCouponsUpToMaxPrice(75).forEach(System.out::println);
@@ -513,7 +534,8 @@ public class TestFacade {
         /**
          * Login to Customer Facade
          */
-        System.out.println(ArtUtils.CUSTOMERS_FACADE);
+        Colors.setPurpleBoldPrint(ArtUtils.CUSTOMERS_FACADE);
+
         Customer loggedCustomer1 = null;
         Customer loggedCustomer2 = null;
         Customer loggedCustomer3 = null;
@@ -528,7 +550,8 @@ public class TestFacade {
         CustomerFacade customerFacade2 = null;
         CustomerFacade customerFacade3 = null;
 
-        System.out.println("---------------- Attempting to Connect to a customer with false parameters --------------");
+        Colors.setPurpleBoldPrint("CUSTOMERS FACADE | ---------------- Attempting to Connect to a customer with false parameters -------------");
+
         try {
             customerFacade1 = (CustomerFacade) loginManager.login("false@false.com", "false", ClientType.CUSTOMER);
         } catch (invalidCompanyException | invalidCustomerException | invalidAdminException e) {
@@ -536,7 +559,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("----------------------------- Checking Connection to Customer --------------------------");
+        Colors.setPurpleBoldPrint("CUSTOMERS FACADE | ----------------------------- Checking Connection to Customer --------------------------");
+
         try {
             customerFacade1 = (CustomerFacade) loginManager.login(loggedCustomer1.getEmail(), loggedCustomer1.getPassword(), ClientType.CUSTOMER);
             customerFacade2 = (CustomerFacade) loginManager.login(loggedCustomer2.getEmail(), loggedCustomer2.getPassword(), ClientType.CUSTOMER);
@@ -551,7 +575,8 @@ public class TestFacade {
         System.out.println(customerFacade3);
         System.out.println();
 
-        System.out.println("---- Attempt to get all customer coupons when there is no coupons for this customer ----");
+        Colors.setPurpleBoldPrint("CUSTOMERS FACADE | ---- Attempt to get all customer coupons when there is no coupons for this customer ----");
+
         try {
             System.out.println("Attempt to get all the coupons of the customer id: \"" + customerFacade2.getTheLoggedCustomerDetails().getId() + "\"");
             customerFacade2.getAllCustomerCoupons().forEach(System.out::println);
@@ -560,7 +585,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("------------------------- Adding new coupon to CustomersVsCoupons ----------------------");
+        Colors.setPurpleBoldPrint("CUSTOMERS FACADE | ------------------------- Adding new coupon to CustomersVsCoupons ----------------------");
+
         System.out.println("Attempting to add coupons:");
         System.out.println();
 
@@ -595,7 +621,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("---------- Attempt to add a coupon that is out of stock to CustomersVsCoupons ----------");
+        Colors.setPurpleBoldPrint("CUSTOMERS FACADE | ---------- Attempt to add a coupon that is out of stock to CustomersVsCoupons ----------");
+
         System.out.println("Attempting to add coupon:");
         try {
             Coupon couponToPurchase11 = companyFacade1.getSingleCoupon(5);
@@ -607,7 +634,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("---------- Attempt to add a coupon that has been expired to CustomersVsCoupons ---------");
+        Colors.setPurpleBoldPrint("CUSTOMERS FACADE | ---------- Attempt to add a coupon that has been expired to CustomersVsCoupons ---------");
+
         System.out.println("Attempting to add coupons:");
         try {
             Coupon couponToPurchase12 = companyFacade1.getSingleCoupon(6);
@@ -623,7 +651,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("------------ Attempt to add a coupon that already exist in CustomersVsCoupons ----------");
+        Colors.setPurpleBoldPrint("CUSTOMERS FACADE | ------------ Attempt to add a coupon that already exist in CustomersVsCoupons ----------");
+
         System.out.println("Attempting to add coupon:");
         try {
             Coupon existingCoupon = companyFacade1.getSingleCoupon(1);
@@ -636,7 +665,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("------------------------------ Get all customer coupons --------------------------------");
+        Colors.setPurpleBoldPrint("CUSTOMERS FACADE | ------------------------------ Get all customer coupons --------------------------------");
+
         try {
             System.out.println("Attempt to get all the coupons of the customer id: \"" + customerFacade2.getTheLoggedCustomerDetails().getId() + "\"");
             customerFacade2.getAllCustomerCoupons().forEach(System.out::println);
@@ -645,16 +675,19 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("----------------------- Get all coupons from a specific category -----------------------");
+        Colors.setPurpleBoldPrint("CUSTOMERS FACADE | ----------------------- Get all coupons from a specific category -----------------------");
+
         try {
             Coupon couponToCheck = companyFacade1.getSingleCoupon(2);
+            System.out.println("Checking the category: " + couponToCheck.getCategory());
             customerFacade1.getAllCustomerCouponsOfSpecificCategory(couponToCheck.getCategory()).forEach(System.out::println);
         } catch (invalidCustomerException | invalidCompanyException e) {
             System.out.println(e.getMessage());
         }
         System.out.println();
 
-        System.out.println("------------------------ Get all coupons up to the maximum price -----------------------");
+        Colors.setPurpleBoldPrint("CUSTOMERS FACADE | ------------------------ Get all coupons up to the maximum price -----------------------");
+
         try {
             System.out.println("High attempt:");
             customerFacade1.getAllCustomerCouponsUpToMaxPrice(95).forEach(System.out::println);
@@ -665,7 +698,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("---------------------------- Get the logged customer details ---------------------------");
+        Colors.setPurpleBoldPrint("CUSTOMERS FACADE | ---------------------------- Get the logged customer details ---------------------------");
+
         try {
             System.out.println(customerFacade1.getTheLoggedCustomerDetails());
         } catch (invalidCustomerException e) {
@@ -677,9 +711,10 @@ public class TestFacade {
         /**
          * Checking deleting methods of the different facades.
          */
-        System.out.println(ArtUtils.DELETING_METHODS);
+        Colors.setBlueBoldPrint(ArtUtils.DELETING_METHODS);
 
-        System.out.println("--------------------------- Company attempt to delete a coupon -------------------------");
+        Colors.setBlueBoldPrint("DELETING METHODS | ---------------------------- Company attempt to delete a coupon --------------------------");
+
         try {
             Coupon couponToDelete = companyFacade2.getSingleCoupon(9);
             System.out.println("Attempt to delete the coupon: ");
@@ -703,7 +738,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("---------------- Attempt by a company to delete another company's coupon ---------------");
+        Colors.setBlueBoldPrint("DELETING METHODS | ----------------- Attempt by a company to delete another company's coupon ----------------");
+
         try {
             Coupon couponToDelete3 = companyFacade2.getSingleCoupon(10);
             System.out.println("Attempt to delete the coupon: ");
@@ -718,7 +754,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("---------- Company attempt to delete a coupon that doesn't exist in the system ---------");
+        Colors.setBlueBoldPrint("DELETING METHODS | ----------- Company attempt to delete a coupon that doesn't exist in the system ----------");
+
         Coupon couponToDelete2 = new Coupon();
         System.out.println("Attempt to delete a coupon that doesn't exist in the system, coupon:\n" + couponToDelete2);
         try {
@@ -728,7 +765,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("------------------------------ Deleting an existing customer ---------------------------");
+        Colors.setBlueBoldPrint("DELETING METHODS | ------------------------------- Deleting an existing customer ----------------------------");
+
         try {
             Customer customerToDelete = adminFacade.getSingleCustomer(7);
             System.out.println("Attempting to delete customer: ");
@@ -744,7 +782,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("-------------- Getting all customers coupons of a customer with no coupons -------------");
+        Colors.setBlueBoldPrint("DELETING METHODS | --------------- Getting all customers coupons of a customer with no coupons --------------");
+
         try {
             adminFacade.getAllCustomersVsCoupons((adminFacade.getSingleCustomer(9)).getId()).forEach(System.out::println);
         } catch (invalidAdminException e) {
@@ -752,7 +791,8 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("---------------------- Deleting an existing customer with no coupons -------------------");
+        Colors.setBlueBoldPrint("DELETING METHODS | ----------------------- Deleting an existing customer with no coupons --------------------");
+
         try {
             Customer customerToDelete2 = adminFacade.getSingleCustomer(9);
             System.out.println("Attempting to delete customer: ");
@@ -768,7 +808,7 @@ public class TestFacade {
         }
         System.out.println();
 
-        System.out.println("------------------------------ Deleting an existing company ----------------------------");
+        Colors.setBlueBoldPrint("DELETING METHODS | ------------------------------- Deleting an existing company -----------------------------");
 
         try {
             Company companyToDelete = adminFacade.getSingleCompany(2);
@@ -795,9 +835,10 @@ public class TestFacade {
         /**
          * Checking the Thread of the daily expired coupons.
          */
-        System.out.println(ArtUtils.CHECK_THREAD);
+        //System.out.println(ArtUtils.CHECK_THREAD);
+        Colors.setYellowBoldPrint(ArtUtils.CHECK_THREAD);
 
-        System.out.println("------------------------ Entering coupons with an expired date -------------------------");
+        Colors.setYellowBoldPrint("CHECK_THREAD | -------------------------- Entering coupons with an expired date ---------------------------");
         System.out.println();
 
         try {
@@ -828,8 +869,7 @@ public class TestFacade {
         }
         System.out.println();
 
-
-        System.out.println("-------------------- Checking the Thread of the daily expired coupons ------------------");
+        Colors.setYellowBoldPrint("CHECK_THREAD | ---------------------- Checking the Thread of the daily expired coupons --------------------");
 
         /**
          * The thread will run for 200 millis on the test.
@@ -861,6 +901,7 @@ public class TestFacade {
          */
         ConnectionPool.getInstance().closeAllConnections();
 
-        System.out.println("End");
+        Colors.separation();
+        Colors.setRedBoldBrightPrint("End");
     }
 }

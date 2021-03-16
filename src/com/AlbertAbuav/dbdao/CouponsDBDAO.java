@@ -17,6 +17,8 @@ public class CouponsDBDAO implements CouponsDAO {
 
     private static final String QUERY_IS_COUPON_EXISTS_BY_TITLE = "SELECT * FROM `couponsystem`.`coupons` WHERE EXISTS (SELECT * FROM `couponsystem`.`coupons` WHERE (`title` = ?));";
     private static final String QUERY_IS_COUPON_EXISTS_BY_COUPON_ID_AND_COMPANY_ID = "SELECT * FROM `couponsystem`.`coupons` WHERE EXISTS (SELECT * FROM `couponsystem`.`coupons` WHERE (`id` = ?) AND (`company_id` = ?));";
+    private static final String QUERY_IS_COUPON_EXISTS_BY_COUPON_ID_AND_CATEGORY = "SELECT * FROM `couponsystem`.`coupons` WHERE EXISTS (SELECT * FROM `couponsystem`.`coupons` WHERE (`id` = ?) AND (`category_id` = ?));";
+    private static final String QUERY_IS_COUPON_EXISTS_BY_COUPON_ID_AND_MAX_PRICE = "SELECT * FROM `couponsystem`.`coupons` WHERE EXISTS (SELECT * FROM `couponsystem`.`coupons` WHERE (`id` = ?) AND (`price` < ?));";
     private static final String QUERY_IS_COUPONS_EXISTS_BY_COMPANY_ID = "SELECT * FROM `couponsystem`.`coupons` WHERE EXISTS (SELECT * FROM `couponsystem`.`coupons` WHERE (`company_id` = ?));";
     private static final String QUERY_IS_COUPON_EXISTS_BY_COMPANY_ID_AND_TITLE = "SELECT * FROM `couponsystem`.`coupons` WHERE EXISTS (SELECT * FROM `couponsystem`.`coupons` WHERE (`company_id` = ?) AND (`title` = ?));";
     private static final String QUERY_INSERT_COUPON = "INSERT INTO `couponsystem`.`coupons` (`company_id`, `category_id`, `title`, `description`, `start_date`, `end_date`, `amount`, `price`, `image`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
@@ -27,6 +29,7 @@ public class CouponsDBDAO implements CouponsDAO {
     private static final String QUERY_GET_ALL_COUPONS_OF_A_SINGLE_COMPANY_BY_CATEGORY = "SELECT * FROM `couponsystem`.`coupons` WHERE (`company_id` = ?) AND (`category_id` = ?);";
     private static final String QUERY_GET_ALL_COUPONS_UP_TO_MAX_PRICE = "SELECT * FROM `couponsystem`.`coupons` WHERE (`company_id` = ?) AND (`price` < ?);";
     private static final String QUERY_GET_SINGLE_COUPON = "SELECT * FROM `couponsystem`.`coupons` WHERE (`id` = ?);";
+    private static final String QUERY_GET_SINGLE_COUPON_BY_COUPON_ID_AND_CATEGORY = "SELECT * FROM `couponsystem`.`coupons` WHERE (`id` = ?) AND (`category_id` = ?);";
     private static final String QUERY_GET_COUPON_BY_TITLE = "SELECT * FROM `couponsystem`.`coupons` WHERE (`title` = ?);";
 
     CustomersVsCouponsDAO customersVsCouponsDAO = new CustomersVsCouponsDBDAO();
@@ -283,6 +286,38 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
     @Override
+    public boolean isCouponExistsByCouponIdAndCategory(int couponID, Category category) {
+        Map<Integer, Object> map = new HashMap<>();
+        map.put(1, couponID);
+        map.put(2, category);
+        ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_IS_COUPON_EXISTS_BY_COUPON_ID_AND_CATEGORY, map);
+        try {
+            if (resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isCouponExistsByCouponIdAndMaxPrice(int couponID, double maxPrice) {
+        Map<Integer, Object> map = new HashMap<>();
+        map.put(1, couponID);
+        map.put(2, maxPrice);
+        ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_IS_COUPON_EXISTS_BY_COUPON_ID_AND_MAX_PRICE, map);
+        try {
+            if (resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
     public List<Coupon> getAllExpiredCoupons() {
         List<Coupon> coupons = new ArrayList<>();
         ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_GET_ALL_COUPONS);
@@ -362,7 +397,6 @@ public class CouponsDBDAO implements CouponsDAO {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
 //        Connection connection = null;
 //        try {
 //            // Step 2
@@ -390,6 +424,32 @@ public class CouponsDBDAO implements CouponsDAO {
 //            // Step 5
 //            ConnectionPool.getInstance().returnConnection(connection);
 //        }
+        return coupon;
+    }
+
+    @Override
+    public Coupon getSingleCouponByCouponIdAndCategory(int couponID, Category category) {
+        Coupon coupon = null;
+        Map<Integer, Object> map = new HashMap<>();
+        map.put(1, couponID);
+        map.put(2, category);
+        ResultSet resultSet = DBUtils.runQueryWithResultSet(QUERY_GET_SINGLE_COUPON_BY_COUPON_ID_AND_CATEGORY, map);
+        try {
+            resultSet.next();
+            int id = resultSet.getInt(1);
+            int company_id = resultSet.getInt(2);
+            Category categoryB = Category.values()[(resultSet.getInt(3))-1];
+            String title = resultSet.getString(4);
+            String description = resultSet.getString(5);
+            Date start_date = resultSet.getDate(6);
+            Date end_date = resultSet.getDate(7);
+            int amount = resultSet.getInt(8);
+            double price = resultSet.getDouble(9);
+            String image = resultSet.getString(10);
+            coupon = new Coupon(id, company_id, categoryB, title, description, start_date, end_date, amount, price, image);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
         return coupon;
     }
 
@@ -493,5 +553,10 @@ public class CouponsDBDAO implements CouponsDAO {
     @Override
     public boolean isCustomersCouponsExistsByCustomerIdAndCouponId(int customerID, int couponID) {
         return customersVsCouponsDAO.isCustomersCouponsExistsByCustomerIdAndCouponId(customerID, couponID);
+    }
+
+    @Override
+    public boolean isCustomersCouponsExistsByCouponId(int couponID) {
+        return customersVsCouponsDAO.isCustomersCouponsExistsByCouponId(couponID);
     }
 }

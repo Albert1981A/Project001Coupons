@@ -91,21 +91,38 @@ public class CustomerFacade extends ClientFacade {
      * @return List
      */
     public List<Coupon> getAllCustomerCouponsOfSpecificCategory(Category category) throws invalidCustomerException {
-        if (getAllCustomerCoupons() == null) {
-            throw new invalidCustomerException("There are no customer coupons!");
+        List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCoupons(customerID);
+        if (purchases.size() == 0) {
+            throw new invalidCustomerException("There are no coupons purchased by the Logged customer!");
         }
-        List<Coupon> couponList = getAllCustomerCoupons();
-        List<Coupon> categoryList = new ArrayList<>();
-        for (Coupon coupon : couponList) {
-            if (coupon.getCategory().equals(category)) {
-                categoryList.add(coupon);
+        List<Coupon> couponList = new ArrayList<>();
+        for (CustomersVsCoupons purchase : purchases) {
+            if (couponsDAO.isCouponExistsByCouponIdAndCategory(purchase.getCouponID(), category)) {
+                couponList.add(couponsDAO.getSingleCouponByCouponIdAndCategory(purchase.getCouponID(), category));
             }
         }
-        if (categoryList.size() == 0) {
-            throw new invalidCustomerException("There are no customer coupons of the specific category you entered!");
+        if (couponList.size() == 0) {
+            throw new invalidCustomerException("There are no coupons purchased by the Logged customer!");
         }
-        return categoryList;
+        return couponList;
     }
+
+//    public List<Coupon> getAllCustomerCouponsOfSpecificCategory(Category category) throws invalidCustomerException {
+//        if (getAllCustomerCoupons() == null) {
+//            throw new invalidCustomerException("There are no customer coupons!");
+//        }
+//        List<Coupon> couponList = getAllCustomerCoupons();
+//        List<Coupon> categoryList = new ArrayList<>();
+//        for (Coupon coupon : couponList) {
+//            if (coupon.getCategory().equals(category)) {
+//                categoryList.add(coupon);
+//            }
+//        }
+//        if (categoryList.size() == 0) {
+//            throw new invalidCustomerException("There are no customer coupons of the specific category you entered!");
+//        }
+//        return categoryList;
+//    }
 
     /**
      * Get all coupons up to the maximum price set by the customer purchased.
@@ -115,21 +132,20 @@ public class CustomerFacade extends ClientFacade {
      * @return List
      */
     public List<Coupon> getAllCustomerCouponsUpToMaxPrice(double maxPrice) throws invalidCustomerException {
-        if (getAllCustomerCoupons() == null) {
-            throw new invalidCustomerException("There are no customers purchases!");
+        List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCoupons(customerID);
+        if (purchases.size() == 0) {
+            throw new invalidCustomerException("There are no coupons purchased by the Logged customer!");
         }
-        List<Coupon> couponList = getAllCustomerCoupons();
-        List<Coupon> categoryList = new ArrayList<>();
-        for (Coupon coupon : couponList) {
-            if (coupon.getPrice() <= maxPrice) {
-                categoryList.add(coupon);
+        List<Coupon> couponList = new ArrayList<>();
+        for (CustomersVsCoupons purchase : purchases) {
+            if (couponsDAO.isCouponExistsByCouponIdAndMaxPrice(purchase.getCouponID(), maxPrice)) {
+                couponList.add(couponsDAO.getSingleCoupon(purchase.getCouponID()));
             }
         }
-        if (categoryList.size() == 0) {
-            throw new invalidCustomerException("The price of the coupons is higher than " + maxPrice);
+        if (couponList.size() == 0) {
+            throw new invalidCustomerException("There are no coupons purchased by the Logged customer!");
         }
-        return categoryList;
-
+        return couponList;
     }
 
     /**

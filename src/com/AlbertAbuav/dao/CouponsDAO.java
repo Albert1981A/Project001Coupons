@@ -26,9 +26,15 @@ public interface CouponsDAO {
 
     boolean isCouponExistsByTitle(String title);
 
+    boolean isCouponExistsByCouponIdAndCategory(int couponID, Category category);
+
+    boolean isCouponExistsByCouponIdAndMaxPrice(int couponID, double maxPrice);
+
     List<Coupon> getAllExpiredCoupons();
 
     Coupon getSingleCoupon(int couponID);
+
+    Coupon getSingleCouponByCouponIdAndCategory(int couponID, Category category);
 
     Coupon getCouponByTitle(String title);
 
@@ -45,5 +51,7 @@ public interface CouponsDAO {
     List<CustomersVsCoupons> getAllCustomersCouponsByCouponId(int couponID);
 
     boolean isCustomersCouponsExistsByCustomerIdAndCouponId(int customerID, int couponID);
+
+    boolean isCustomersCouponsExistsByCouponId(int couponID);
 
 }
