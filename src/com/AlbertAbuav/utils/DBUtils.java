@@ -27,7 +27,7 @@ public class DBUtils {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.execute();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            Colors.setRedPrint(e.getMessage());
         } finally {
             // Step 5
             ConnectionPool.getInstance().returnConnection(connection);
@@ -63,7 +63,7 @@ public class DBUtils {
             statement.execute();
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            Colors.setRedPrint(e.getMessage());
         } finally {
             // Step 5
             ConnectionPool.getInstance().returnConnection(connection);
@@ -100,7 +100,7 @@ public class DBUtils {
             // Step 4
             resultSet = statement.executeQuery();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            Colors.setRedPrint(e.getMessage());
         } finally {
             // Step 5
             ConnectionPool.getInstance().returnConnection(connection);
@@ -119,7 +119,7 @@ public class DBUtils {
             // Step 4
             resultSet = statement.executeQuery();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            Colors.setRedPrint(e.getMessage());
         } finally {
             // Step 5
             ConnectionPool.getInstance().returnConnection(connection);

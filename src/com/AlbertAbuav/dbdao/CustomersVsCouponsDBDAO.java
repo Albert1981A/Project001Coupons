@@ -2,6 +2,7 @@ package com.AlbertAbuav.dbdao;
 
 import com.AlbertAbuav.beans.CustomersVsCoupons;
 import com.AlbertAbuav.dao.CustomersVsCouponsDAO;
+import com.AlbertAbuav.utils.Colors;
 import com.AlbertAbuav.utils.DBUtils;
 
 import java.sql.ResultSet;
@@ -49,7 +50,7 @@ public class CustomersVsCouponsDBDAO implements CustomersVsCouponsDAO {
                 customersVsCoupons.add(temp);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Colors.setRedPrint(e.getMessage());
         }
         return customersVsCoupons;
     }
@@ -67,7 +68,7 @@ public class CustomersVsCouponsDBDAO implements CustomersVsCouponsDAO {
                 customersVsCoupons.add(temp);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Colors.setRedPrint(e.getMessage());
         }
         return customersVsCoupons;
     }
@@ -83,7 +84,7 @@ public class CustomersVsCouponsDBDAO implements CustomersVsCouponsDAO {
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Colors.setRedPrint(e.getMessage());
         }
         return false;
     }
@@ -98,7 +99,7 @@ public class CustomersVsCouponsDBDAO implements CustomersVsCouponsDAO {
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            Colors.setRedPrint(e.getMessage());
         }
         return false;
     }

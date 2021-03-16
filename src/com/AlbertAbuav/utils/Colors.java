@@ -91,6 +91,10 @@ public class Colors {
         System.out.println(Colors.RED_BOLD + massage + Colors.RESET);
     }
 
+    public static void setRedPrint(String massage) {
+        System.out.println(Colors.RED + massage + Colors.RESET);
+    }
+
     public static void setPurpleBoldPrint(String massage) {
         System.out.println(Colors.PURPLE_BOLD + massage + Colors.RESET);
     }

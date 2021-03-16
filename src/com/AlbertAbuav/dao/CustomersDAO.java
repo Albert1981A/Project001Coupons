@@ -1,9 +1,7 @@
 package com.AlbertAbuav.dao;
 
-import com.AlbertAbuav.beans.Company;
 import com.AlbertAbuav.beans.Customer;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface CustomersDAO {

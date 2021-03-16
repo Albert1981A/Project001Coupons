@@ -86,12 +86,14 @@ public class AdminFacade extends ClientFacade {
         if (companyCoupons.size() != 0) {
             for (Coupon coupon : companyCoupons) {
                 List<CustomersVsCoupons> purchases = couponsDAO.getAllCustomersCouponsByCouponId(coupon.getId());
-                if (purchases.size() != 0) {
-                    for (CustomersVsCoupons purchase : purchases) {
-                        couponsDAO.deleteCouponPurchase(purchase.getCustomerID(), purchase.getCouponID());
-                    }
+                if (purchases.size() == 0) {
                     couponsDAO.deleteCoupon(coupon.getId());
+                    continue;
                 }
+                for (CustomersVsCoupons purchase : purchases) {
+                    couponsDAO.deleteCouponPurchase(purchase.getCustomerID(), purchase.getCouponID());
+                }
+                couponsDAO.deleteCoupon(coupon.getId());
             }
         }
         companiesDAO.deleteCompany(company.getId());

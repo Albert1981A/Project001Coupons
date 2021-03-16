@@ -1,5 +1,7 @@
 package com.AlbertAbuav.db;
 
+import com.AlbertAbuav.utils.Colors;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -83,7 +85,8 @@ public class ConnectionPool {
                 connection = DriverManager.getConnection(DatabaseManager.url, DatabaseManager.username, DatabaseManager.password);
             } catch (SQLException throwables) {
                 // throwables.printStackTrace();
-                System.out.println(throwables.getMessage());
+                // System.out.println(throwables.getMessage());
+                Colors.setRedPrint(throwables.getMessage());
             }
             connections.push(connection);
         }
