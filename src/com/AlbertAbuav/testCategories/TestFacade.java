@@ -882,11 +882,17 @@ public class TestFacade {
         Colors.setYellowBoldPrint("CHECK_THREAD | ---------------------- Checking the Thread of the daily expired coupons --------------------");
 
         /**
-         * The thread will run for 200 millis on the test.
-         * Will be set for 24 hours on the live program.
+         * The thread will start at sleep mode with the run of t1.start.
+         * Will be set for 24 hours sleep.
          */
         DailyExpiredCoupons dailyExpiredCoupons = new DailyExpiredCoupons();
-        new Thread(dailyExpiredCoupons, "DailyExpiredCoupons1").start();
+        Thread t1 = new Thread(dailyExpiredCoupons, "DailyExpiredCoupons1");
+        t1.start();
+
+        /**
+         * The Thread is sleeping for 24 hours and needs to be interrupted
+         */
+        t1.interrupt();
 
         /**
          * Stopping DailyExpiredCoupons thread.
