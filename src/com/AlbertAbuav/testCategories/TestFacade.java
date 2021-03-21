@@ -18,12 +18,14 @@ import com.AlbertAbuav.login.ClientType;
 import com.AlbertAbuav.login.LoginManager;
 import com.AlbertAbuav.tasks.DailyExpiredCoupons;
 import com.AlbertAbuav.utils.ArtUtils;
+import com.AlbertAbuav.utils.ChartUtils;
 import com.AlbertAbuav.utils.Colors;
 import com.AlbertAbuav.utils.DateUtils;
 
 import java.awt.*;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 public class TestFacade {
 
@@ -811,6 +813,8 @@ public class TestFacade {
             System.out.println("Customer deleted!");
             System.out.println("Customers left:");
             adminFacade.getAllCustomers().forEach(System.out::println);
+            System.out.println();
+            ChartUtils.printCustomers(adminFacade.getAllCustomers());
             System.out.println("Is customer exist: ");
             adminFacade.getAllCustomersVsCoupons(customerToDelete2.getId()).forEach(System.out::println);
         } catch (invalidAdminException e) {
@@ -845,7 +849,6 @@ public class TestFacade {
         /**
          * Checking the Thread of the daily expired coupons.
          */
-        //System.out.println(ArtUtils.CHECK_THREAD);
         Colors.setYellowBoldPrint(ArtUtils.CHECK_THREAD);
 
         Colors.setYellowBoldPrint("CHECK_THREAD | -------------------------- Entering coupons with an expired date ---------------------------");
@@ -911,6 +914,26 @@ public class TestFacade {
 
         System.out.println(Thread.currentThread().getName() + " is finished now");
         System.out.println();
+
+        try {
+            Company c1 = adminFacade.getSingleCompany(4);
+            System.out.println(c1);
+            System.out.println();
+            ChartUtils.printCompany(c1);
+            List<Company> companies1 = adminFacade.getAllCompanies();
+            ChartUtils.printCompanies(companies1);
+        } catch (invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            Customer c2 = adminFacade.getSingleCustomer(4);
+            System.out.println(c2);
+            System.out.println();
+            ChartUtils.printCustomer(c2);
+        } catch (invalidAdminException e) {
+            System.out.println(e.getMessage());
+        }
 
         /**
          * closing all connections.
