@@ -935,6 +935,16 @@ public class TestFacade {
             System.out.println(e.getMessage());
         }
 
+        try {
+            Coupon cou = companyFacade1.getSingleCoupon(3);
+            System.out.println(cou);
+            System.out.println();
+            ChartUtils.printCoupon(cou);
+        } catch (invalidCompanyException e) {
+            System.out.println(e.getMessage());
+        }
+
+
         /**
          * closing all connections.
          */
