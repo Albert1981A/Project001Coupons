@@ -1,6 +1,5 @@
 package com.AlbertAbuav.beans;
 
-import com.AlbertAbuav.utils.Colors;
 import com.AlbertAbuav.utils.FactoryUtils;
 import com.AlbertAbuav.utils.PrintUtils;
 
@@ -29,10 +28,8 @@ public class Company {
     }
 
     public Company(int id, String name, String email, String password) {
+        this(name, email, password);
         this.id = id;
-        this.name = name;
-        this.email = email;
-        this.password = password;
     }
 
     public int getId() {

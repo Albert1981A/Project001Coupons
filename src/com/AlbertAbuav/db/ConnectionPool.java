@@ -28,7 +28,7 @@ public class ConnectionPool {
     /**
      * The class is lazily loaded (it is initialized only after it is called by the getter)
      * The getter method have a doable lock synchronized block
-     * Tis is to make the method efficient and Thread safe
+     * This is to make the method efficient and Thread safe
      * @return
      */
     public static ConnectionPool getInstance() {

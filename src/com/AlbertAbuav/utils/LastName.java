@@ -5,5 +5,5 @@ public enum LastName {
     Thomas, Roberts, Murphy, OKelly, OSullivan, Walsh, OBrien, Byrne,
     ORyan, OConnor, ONeill, Johnson, Miller, Davis, Garcia, Rodriguez,
     Lam, Martin, Gelbero, Roy, Tremblay, Lee, Gagnon, Morton, White,
-    Anderson, Singh, Wang,
+    Anderson, Singh, Wang
 }

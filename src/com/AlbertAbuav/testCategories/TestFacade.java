@@ -22,7 +22,6 @@ import com.AlbertAbuav.utils.ChartUtils;
 import com.AlbertAbuav.utils.Colors;
 import com.AlbertAbuav.utils.DateUtils;
 
-import java.awt.*;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +29,6 @@ import java.util.List;
 public class TestFacade {
 
     public static void testAll() {
-
         Colors.setRedBoldBrightPrint("START");
         Colors.separation();
 
